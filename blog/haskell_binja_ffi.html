@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BloomBit – Haskell FFI for Binary Ninja</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../styles.css"/>
+
+  <style>
+    .ffi-transform {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0.5rem;
+      align-items: start;
+      margin-top: 0.8rem;
+    }
+
+    @media (max-width: 900px) {
+      .ffi-transform {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .ffi-transform-col {
+      border: 1px solid var(--border-soft);
+      background: var(--panel-alt);
+      border-radius: var(--radius-md);
+      padding: 0.15rem 0.25rem 0.25rem;
+    }
+
+    .ffi-transform-heading {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--ink-muted);
+      margin: 0 0 0.55rem;
+    }
+
+    .ffi-transform-col pre {
+      margin: 0;
+      background: #f7f4eb;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div class="brand-text-main">BloomBit</div>
+          <div class="brand-text-sub">program analysis &amp; reverse engineering</div>
+        </div>
+      </div>
+      <nav>
+        <a href="https://www.bloombit.dev">home</a>
+        <a href="https://github.com/bloombit-dev">github</a>
+      </nav>
+    </header>
+
+    <main>
+      <article class="post-content">
+          <h1 class="blog-section">Writing Haskell FFI for Binary Ninja</h1>
+        <div class="post-meta">Haskell · FFI · Binary Ninja — December 22, 2025</div>
+
+        <p>This post details implementation of haskell bindings for Binary Ninja.</p>
+
+        <h2 class="blog-subsection">Resources</h2>
+        <ul>
+            <li>Imperative functional programming. Simon L. Peyton Jones and Philip Wadler. <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/1993/01/imperative.pdf">Paper pdf.</a></li>
+            <li>Stranger in a Strange Land: An introductory tour of the Haskell FFI. P.C. Shyamshankar @ galois. <a href="https://www.youtube.com/watch?v=zlOrYQH_-Xs">Youtube video</a>
+        </ul>
+
+        <h2 class="blog-subsection">Motivation</h2>
+          <p>Haskell is one of the best languages. Binary ninja provides the best api, ui and performance compared to ida pro and ghidra.</p>
+          <p>There are three first-party supported languages for the binary ninja API:
+            <ul>
+              <li>C++: <a href="https://api.binary.ninja/cpp/index.html">Documentation</a></li>
+              <li>Python: <a href="https://api.binary.ninja/">Documentation</a></li>
+              <li>Rust: <a href="https://rust.binary.ninja/binaryninja/index.html">Documentation</a></li>
+            </ul>
+Python is the most popular and most documented first party binding. Python <u style="color: var(--accent)">isn't</u> Haskell though.</p>
+
+          <p>There exists a third-party binding for haskell from kudu-dynamics <a href="https://www.leidos.com/insights/leidos-acquires-kudu-dynamics-advancing-ai-capabilities-cyber-warfighters">(acquired by Leidos)</a>. This <a href="https://github.com/kudu-dynamics/blaze-platform/tree/main/binaryninja-haskell">repo</a> generates bindings by processing a binary ninja C header file provided by vector35 into <a href="https://github.com/Vector35/binaryninja-api/issues/4422">compliant</a> C for use by c2hs. Due to the required processing of this header file my preference is to handwrite and locally generate bindings.</p>
+
+        <h2 class="blog-subsection">How?</h2>
+        Elements:
+        <ul>
+          <li>C header file to reference available functions and types: <a href="https://github.com/Vector35/binaryninja-api/blob/dev/binaryninjacore.h">binaryninjacore.h</a></li>
+         <li>Python <a href="https://github.com/Vector35/binaryninja-api/tree/dev/python">bindings</a> (indirect documentation for binaryninjacore.h)
+          <li> ForeignFunctionInterface language extension: <a href="https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/ffi.html">GHC FFI Doc</a></li>
+          <li>Shared object shipped with binary ninja</li>
+        </ul>
+
+        <p>The general process I've taken:</p>
+        <ol>
+          <li>Pick a feature</li>
+          <li>Enumerate required types and functions via Python bindings</li>
+          <li>Implement the low level types and functions in haskell</li>
+          <li>Spot-check test and implement higher level types / functions to taste</li>
+          <li>Repeat</li>
+        </ol> 
+
+          <h3>Binding of an enum type</h3>
+        <div class="ffi-transform">
+          <div class="ffi-transform-col">
+            <div class="ffi-transform-heading">C</div>
+            <pre><code class="language-c">typedef enum BNStringType
+{
+  AsciiString = 0,
+  Utf16String = 1,
+  Utf32String = 2,
+  Utf8String = 3
+} BNStringType;
+</code></pre>
+      </div>
+
+          <div class="ffi-transform-col">
+            <div class="ffi-transform-heading">Haskell</div>
+            <pre><code class="language-haskell">data BNStringType
+  = AsciiString
+  | Utf16String
+  | Utf32String
+  | Utf8String
+  deriving (Eq, Show, Enum)
+          </code></pre></div>
+  Note if the C enum type has jumps (such as: 0, 1, 125, ...) then instead of deriving Enum for the haskell
+    type an instance of Enum should be created to match values of the C enum.
+</div>
+
+          <h3>Binding of a struct</h3>
+
+        <div class="ffi-transform">
+          <div class="ffi-transform-col">
+            <div class="ffi-transform-heading">C</div>
+            <pre><code class="language-c">typedef struct BNStringReference
+{
+  BNStringType type;
+  uint64_t start;
+  size_t length;
+} BNStringReference;
+</code></pre>
+  </div>
+         <div class="ffi-transform-col">
+            <div class="ffi-transform-heading">Haskell</div>
+            <pre><code class="language-haskell">data BNStringRef = BNStringRef
+  { bnType :: !BNStringType,
+    bnStart :: !Word64,
+    bnLength :: !CSize
+  }
+  deriving (Eq, Show)
+
+instance Storable BNStringRef where
+  sizeOf _ = 24
+  alignment _ = Binja.Types.alignmentS
+  peek ptr = do
+    t <- toEnum . fromIntegral <$> (peekByteOff ptr 0 :: IO CInt)
+    s <- peekByteOff ptr 8 :: IO Word64
+    l <- peekByteOff ptr 16 :: IO CSize
+    pure (BNStringRef t s l)
+  poke ptr (BNStringRef t s l) = do
+    pokeByteOff ptr 0 $ fromEnum t
+    pokeByteOff ptr 8 s
+    pokeByteOff ptr 16 l
+    </code></pre></div>
+            The Storable instance offsets of BNStringRef can be derived by reviewing binary ninja's shared object in binary ninja or trial and error based on the C header file types. A Storable instance allows for converting a pointer to a value and a value to a pointer.
+          </div>
+
+          <h3>Binding of a function involving list of pointers</h3>
+        <div class="ffi-transform">
+          <div class="ffi-transform-col">
+            <div class="ffi-transform-heading">C</div>
+            <pre><code class="language-c">BNFunction** BNGetAnalysisFunctionList(
+   BNBinaryView* view,
+   size_t* count);
+            </code></pre>
+          </div>
+          <div class="ffi-transform-col">
+            <div class="ffi-transform-heading">Haskell</div>
+            <pre><code class="language-haskell">foreign import ccall unsafe "BNGetAnalysisFunctionList"
+  c_BNGetAnalysisFunctionList ::
+    BNBinaryViewPtr ->
+    Ptr CSize ->
+    IO (Ptr BNFunctionPtr)
+
+foreign import ccall unsafe "BNFreeFunctionList"
+  c_BNFreeFunctionList ::
+    Ptr BNFunctionPtr ->
+    CSize ->
+    IO ()
+
+data FunctionList = FunctionList
+  { flArrayPtr :: !(ForeignPtr BNFunctionPtr),
+    flCount :: !Int,
+    flList :: ![BNFunctionPtr],
+    flViewPtr :: !BNBinaryViewPtr
+  }
+  deriving (Eq, Show)
+
+getFunctionList :: BNBinaryViewPtr ->
+                   IO FunctionList
+getFunctionList view =
+  alloca $ \countPtr -> do
+    rawPtr <- c_BNGetAnalysisFunctionList view countPtr
+    count <- fromIntegral <$> peek countPtr
+    xs <-
+      if rawPtr == nullPtr || count == 0
+        then pure []
+        else peekArray count rawPtr
+    arrPtr <- newForeignPtr rawPtr (c_BNFreeFunctionList rawPtr (fromIntegral count))
+    pure
+      FunctionList
+        { flArrayPtr = arrPtr,
+          flCount = count,
+          flList = xs,
+          flViewPtr = view
+        }
+
+functions :: BNBinaryViewPtr ->
+             IO [BNFunctionPtr]
+functions = fmap flList . getFunctionList
+              </code></pre>
+          </div>
+
+  <p>A function BNGetAnalysisFunctionList that takes as input a pointer to a BNBinaryView and a count.
+     After the call count is populated with the amount of BNFunction*'s found in the view.
+  </p>
+  <p>c_BNGetAnalysisFunctionList and c_BNFreeFunctionList are allocation and deallocation direct bindings.
+getFunctionList retrieves a FunctionList and manages memory via <a href="https://hackage-content.haskell.org/package/base-4.22.0.0/docs/Foreign-Marshal-Alloc.html">alloca</a> and <a href="https://hackage-content.haskell.org/package/ghc-internal-9.1401.0/docs/GHC-Internal-Foreign-ForeignPtr.html#v:newForeignPtr">newForeignPtr</a>. The function functions is a convenience to extract the list of BNFunctionPtr. Note how the IO monad trickles upward through
+    <ul></ul>
+    <ul> <li>c_BNGetAnalysisFunctionList</li>
+         <li> getFunctionList</li>
+         <li>functions</li>
+    </ul>
+  </p>
+        </div>
+
+  <h2 class="blog-subsection">Testing</h2>
+    Differential testing is used as the testing oracle against a vast and varied dataset of executables.
+The dataset consists of:
+  <ul>
+    <li>981,000 windows executables containing 384,000,000 functions via <a href="https://assemblage-dataset.net/">Assemblage</a></li>
+    <li>639,000 linux executables containing 502,000,000 functions via <a href="https://assemblage-dataset.net/">Assemblage</a></li>
+    <li>High value macOS targets including v8, webkit, sudo, signal with more planned</li>
+    <li>Executables from pixel firmware cellphones planned</li>
+    <li>High value userspace targets for android planned</li>
+    <li><a href="https://github.com/csmith-project/csmith">csmith generated testsuite</a></li>
+  </ul>
+      Currently the purpose of testing is:
+      <ul>
+        <li>Similarity of the python bindings with haskell bindings</li>
+        <li>Regression testing full stack (program analysis, haskell bindings, ghc, binja)</li>
+        <li>Measurement for optimization as a dual purpose</li>
+      </ul>
+
+      Three hosts are used for testing covering 2 operating systems and 2 architectures.
+      <ul>
+        <li>Full testsuite: Apple m4 max with 128gig memory</li>
+        <li>Full testsuite: Debian i9 13900k 24 core cpu with 64gig memory</li>
+        <li>High value targets: Linux arm64 x13s thinkpad</li>
+      </ul>
+      </article>
+    </main>
+  </div>
+</body>
+</html>
+
