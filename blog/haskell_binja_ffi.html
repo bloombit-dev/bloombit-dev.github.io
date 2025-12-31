@@ -75,15 +75,16 @@
 
         <h2 class="blog-subsection">Motivation</h2>
           <p>Haskell is one of the best languages. Binary ninja provides the best api, ui and performance compared to ida pro and ghidra.</p>
+        <p>I want to implement efficient, parallel program analysis code in Haskell to aid reverse engineering and vulnerability research. Think Frama-C but for Medium Level IL instead of C.</p>
           <p>There are three first-party supported languages for the binary ninja API:
             <ul>
               <li>C++: <a href="https://api.binary.ninja/cpp/index.html">Documentation</a></li>
               <li>Python: <a href="https://api.binary.ninja/">Documentation</a></li>
               <li>Rust: <a href="https://rust.binary.ninja/binaryninja/index.html">Documentation</a></li>
             </ul>
-Python is the most popular and most documented first party binding. Python <u style="color: var(--accent)">isn't</u> Haskell though.</p>
+  Python is the most popular and most documented first party binding though python is fairly <u style="color: var(--accent)">slow.</u> C++ and rust are both promising however it's easier for me to write parallel code in Haskell and the GC is nice to have.</p>
 
-          <p>There exists a third-party binding for haskell from kudu-dynamics <a href="https://www.leidos.com/insights/leidos-acquires-kudu-dynamics-advancing-ai-capabilities-cyber-warfighters">(acquired by Leidos)</a>. This <a href="https://github.com/kudu-dynamics/blaze-platform/tree/main/binaryninja-haskell">repo</a> generates bindings by processing a binary ninja C header file provided by vector35 into <a href="https://github.com/Vector35/binaryninja-api/issues/4422">compliant</a> C for use by c2hs. Due to the required processing of this header file my preference is to handwrite and locally generate bindings.</p>
+          <p>There exists a third-party binding for haskell from kudu-dynamics <a href="https://www.leidos.com/insights/leidos-acquires-kudu-dynamics-advancing-ai-capabilities-cyber-warfighters">(acquired by Leidos)</a>. This <a href="https://github.com/kudu-dynamics/blaze-platform/tree/main/binaryninja-haskell">repo</a> generates bindings by processing a binary ninja C header file provided by vector35 into <a href="https://github.com/Vector35/binaryninja-api/issues/4422">compliant</a> C for use by c2hs. Due to the required processing of this header file along with my preference to have more control over types I decided to roll my own bindings.</p>
 
         <h2 class="blog-subsection">How?</h2>
         Elements:
