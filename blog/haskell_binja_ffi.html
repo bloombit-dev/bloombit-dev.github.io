@@ -104,12 +104,17 @@
         <ol>
           <li>Pick a feature</li>
           <li>Enumerate required types and functions via Python bindings</li>
+          <li>Call functions in python to help derive specification</li>
           <li>Implement the low level types and functions in haskell</li>
           <li>Spot-check test and implement higher level types / functions to taste</li>
           <li>Repeat</li>
         </ol> 
 
-          <h3>Binding of an enum type</h3>
+        <h2 class="blog-subsection">Examples: C to Haskell</h2>
+
+        <p>Most binja types and functions lift to Haskell in a handful of patterns.</p>
+
+        <h3>Binding of an enum type</h3>
         <div class="ffi-transform">
           <div class="ffi-transform-col">
             <div class="ffi-transform-heading">C</div>
@@ -241,10 +246,33 @@ getFunctionList retrieves a FunctionList and manages memory via <a href="https:/
          <li>functions</li>
     </ul>
   </p>
+  </p>
         </div>
 
+        <h3>Convert return type from value to pointer</h3>
+Functions which return a structure by value must be wrapped to populate a reference passed as a function argument. The set of these wrappers used by Beluga is <a href="https://github.com/bloombit-dev/beluga/blob/main/cbits/wrapper.c">here</a>.
+        <div class="ffi-transform">
+          <div class="ffi-transform-col">
+            <div class="ffi-transform-heading">C</div>
+            <pre><code class="language-c">BNParameterVariablesWithConfidence
+  BNGetFunctionParameterVariables(BNFunction* func);
+</code></pre>
+      </div>
+          <div class="ffi-transform-col">
+            <div class="ffi-transform-heading">C</div>
+            <pre><code class="language-haskell">void BNGetFunctionParameterVariablesPtr(BNParameterVariablesWithConfidence* out,
+                                        BNFunction* func)
+{
+  *out = BNGetFunctionParameterVariables(func);
+}
+	
+          </code></pre></div>
+</div>
+
+
+
   <h2 class="blog-subsection">Testing</h2>
-    Differential testing is used as the testing oracle against a vast and varied dataset of executables.
+    Differential testing is used as the testing oracle over a large set of executables.
 The dataset consists of:
   <ul>
     <li>945,220 windows executables of total size 140GB <a href="https://assemblage-dataset.net/">Assemblage</a></li>
