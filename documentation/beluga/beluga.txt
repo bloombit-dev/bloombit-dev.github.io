@@ -303,14 +303,35 @@ type BNMlilFunctionPtr = Ptr BNMlilFunction_
 type BNMlilSSAFunctionPtr = Ptr BNMlilSSAFunction_
 type BNLlilFunctionPtr = Ptr BNLlilFunction_
 type BNBasicBlockPtr = Ptr BNBasicBlock_
+data BasicBlockMlilSSA
+BasicBlockMlilSSA :: !BNBasicBlockPtr -> !CSize -> !CSize -> !Bool -> !Bool -> BasicBlockMlilSSA
+[handle] :: BasicBlockMlilSSA -> !BNBasicBlockPtr
+[start] :: BasicBlockMlilSSA -> !CSize
+[end] :: BasicBlockMlilSSA -> !CSize
+[canExit] :: BasicBlockMlilSSA -> !Bool
+[hasInvalidInstructions] :: BasicBlockMlilSSA -> !Bool
 type BNBasicBlockEdgePtr = Ptr BNBasicBlockEdge
 data BNBasicBlockEdge
+BNBasicBlockEdge :: !BNBranchType -> !BNBasicBlockPtr -> !CBool -> !CBool -> BNBasicBlockEdge
+[ty] :: BNBasicBlockEdge -> !BNBranchType
+[target] :: BNBasicBlockEdge -> !BNBasicBlockPtr
+[backEdge] :: BNBasicBlockEdge -> !CBool
+[fallThrough] :: BNBasicBlockEdge -> !CBool
+data BasicBlockEdge
+BasicBlockEdge :: BNBranchType -> BasicBlockMlilSSA -> Bool -> Bool -> BasicBlockEdge
+[ty] :: BasicBlockEdge -> BNBranchType
+[target] :: BasicBlockEdge -> BasicBlockMlilSSA
+[backEdge] :: BasicBlockEdge -> Bool
+
+-- | Whether this edge targets to a node whose control flow can eventually
+--   flow back through the source node of this edge.
+[fallThrough] :: BasicBlockEdge -> Bool
 data BNBranchType
 type BNValueRangePtr = Ptr BNValueRange_
 type BNLookupTableEntryPtr = Ptr BNLookupTableEntry_
 data BNLowLevelILInstruction
-BNLowLevelILInstruction :: !Word32 -> !Word32 -> !CSize -> !CUInt -> !CUInt -> !CULLong -> !CULLong -> !CULLong -> !CULLong -> !CULLong -> BNLowLevelILInstruction
-[llOperation] :: BNLowLevelILInstruction -> !Word32
+BNLowLevelILInstruction :: !Word8 -> !Word32 -> !CSize -> !CUInt -> !CUInt -> !CULLong -> !CULLong -> !CULLong -> !CULLong -> !CULLong -> BNLowLevelILInstruction
+[llOperation] :: BNLowLevelILInstruction -> !Word8
 [llAttributes] :: BNLowLevelILInstruction -> !Word32
 [llSize] :: BNLowLevelILInstruction -> !CSize
 [llFlags] :: BNLowLevelILInstruction -> !CUInt
@@ -662,7 +683,7 @@ AnalysisContext :: BNBinaryViewPtr -> [FunctionContext] -> [Symbol] -> [String] 
 
 -- | Higher level abstraction of a medium level IL SSA variant function
 data FunctionContext
-FunctionContext :: BNMlilSSAFunctionPtr -> Word64 -> Symbol -> Bool -> [MediumLevelILSSAInstruction] -> Map BNSSAVariable SSAVariableContext -> [BNVariable] -> ParameterVars -> Architecture -> FunctionContext
+FunctionContext :: BNMlilSSAFunctionPtr -> Word64 -> Symbol -> Bool -> [MediumLevelILSSAInstruction] -> Map BNSSAVariable SSAVariableContext -> [BNVariable] -> ParameterVars -> Architecture -> CFGContext -> FunctionContext
 [handle] :: FunctionContext -> BNMlilSSAFunctionPtr
 
 -- | The start address for the function
@@ -682,6 +703,7 @@ FunctionContext :: BNMlilSSAFunctionPtr -> Word64 -> Symbol -> Bool -> [MediumLe
 [aliasedVars] :: FunctionContext -> [BNVariable]
 [parameterVars] :: FunctionContext -> ParameterVars
 [architecture] :: FunctionContext -> Architecture
+[cfg] :: FunctionContext -> CFGContext
 
 -- | Higher level abstract of ssa variable defintion site (if exists) and
 --   use sites
@@ -1645,6 +1667,10 @@ MediumLevelILMemPhiRec :: Int -> [Int] -> CoreMediumLevelILInstruction -> Medium
 [destMemory] :: MediumLevelILMemPhiRec -> Int
 [srcMemory] :: MediumLevelILMemPhiRec -> [Int]
 [core] :: MediumLevelILMemPhiRec -> CoreMediumLevelILInstruction
+data CFGContext
+CFGContext :: Map BasicBlockMlilSSA (Set BasicBlockEdge) -> BasicBlockMlilSSA -> CFGContext
+[graph] :: CFGContext -> Map BasicBlockMlilSSA (Set BasicBlockEdge)
+[entry] :: CFGContext -> BasicBlockMlilSSA
 instance GHC.Internal.Enum.Enum Binja.Types.Arm64Intrinsic
 instance GHC.Internal.Enum.Enum Binja.Types.ArmNeonIntrinsic
 instance GHC.Internal.Enum.Enum Binja.Types.BNBranchType
@@ -1660,6 +1686,8 @@ instance GHC.Classes.Eq Binja.Types.Architecture
 instance GHC.Classes.Eq Binja.Types.Arithmetic
 instance GHC.Classes.Eq Binja.Types.Arm64Intrinsic
 instance GHC.Classes.Eq Binja.Types.ArmNeonIntrinsic
+instance GHC.Classes.Eq Binja.Types.BNBasicBlockEdge
+instance GHC.Classes.Eq Binja.Types.BNBranchType
 instance GHC.Classes.Eq Binja.Types.BNLowLevelILInstruction
 instance GHC.Classes.Eq Binja.Types.BNLowLevelILOperation
 instance GHC.Classes.Eq Binja.Types.BNMediumLevelILInstruction
@@ -1672,6 +1700,8 @@ instance GHC.Classes.Eq Binja.Types.BNStringRef
 instance GHC.Classes.Eq Binja.Types.BNStringType
 instance GHC.Classes.Eq Binja.Types.BNVariable
 instance GHC.Classes.Eq Binja.Types.BNVariableSourceType
+instance GHC.Classes.Eq Binja.Types.BasicBlockEdge
+instance GHC.Classes.Eq Binja.Types.BasicBlockMlilSSA
 instance GHC.Classes.Eq Binja.Types.Carry
 instance GHC.Classes.Eq Binja.Types.Comparison
 instance GHC.Classes.Eq Binja.Types.Constant
@@ -1844,6 +1874,8 @@ instance GHC.Classes.Ord Binja.Types.Architecture
 instance GHC.Classes.Ord Binja.Types.Arithmetic
 instance GHC.Classes.Ord Binja.Types.Arm64Intrinsic
 instance GHC.Classes.Ord Binja.Types.ArmNeonIntrinsic
+instance GHC.Classes.Ord Binja.Types.BNBasicBlockEdge
+instance GHC.Classes.Ord Binja.Types.BNBranchType
 instance GHC.Classes.Ord Binja.Types.BNMediumLevelILInstruction
 instance GHC.Classes.Ord Binja.Types.BNMediumLevelILOperation
 instance GHC.Classes.Ord Binja.Types.BNPossibleValueSet
@@ -1851,6 +1883,8 @@ instance GHC.Classes.Ord Binja.Types.BNRegisterValueType
 instance GHC.Classes.Ord Binja.Types.BNSSAVariable
 instance GHC.Classes.Ord Binja.Types.BNVariable
 instance GHC.Classes.Ord Binja.Types.BNVariableSourceType
+instance GHC.Classes.Ord Binja.Types.BasicBlockEdge
+instance GHC.Classes.Ord Binja.Types.BasicBlockMlilSSA
 instance GHC.Classes.Ord Binja.Types.Carry
 instance GHC.Classes.Ord Binja.Types.Comparison
 instance GHC.Classes.Ord Binja.Types.Constant
@@ -2036,6 +2070,9 @@ instance GHC.Internal.Show.Show Binja.Types.BNStringRef
 instance GHC.Internal.Show.Show Binja.Types.BNStringType
 instance GHC.Internal.Show.Show Binja.Types.BNVariable
 instance GHC.Internal.Show.Show Binja.Types.BNVariableSourceType
+instance GHC.Internal.Show.Show Binja.Types.BasicBlockEdge
+instance GHC.Internal.Show.Show Binja.Types.BasicBlockMlilSSA
+instance GHC.Internal.Show.Show Binja.Types.CFGContext
 instance GHC.Internal.Show.Show Binja.Types.Carry
 instance GHC.Internal.Show.Show Binja.Types.Comparison
 instance GHC.Internal.Show.Show Binja.Types.Constant
@@ -2245,10 +2282,13 @@ c_BNMediumLevelILFreeOperandList :: Ptr CULLong -> IO ()
 c_BNMediumLevelILGetOperandList :: BNMlilSSAFunctionPtr -> CSize -> CSize -> Ptr CSize -> IO (Ptr CULLong)
 c_BNFromVariableIdentifierPtr :: Ptr BNVariable -> CULLong -> IO ()
 c_BNGetMediumLevelILBasicBlockList :: BNMlilFunctionPtr -> Ptr CSize -> IO (Ptr BNBasicBlockPtr)
+c_BNGetMediumLevelILSSABasicBlockList :: BNMlilSSAFunctionPtr -> Ptr CSize -> IO (Ptr BNBasicBlockPtr)
 c_BNFreeBasicBlockList :: Ptr BNBasicBlockPtr -> CSize -> IO ()
 c_BNFreeBasicBlockEdgeList :: BNBasicBlockEdgePtr -> CSize -> IO ()
 c_BNGetBasicBlockStart :: BNBasicBlockPtr -> IO CULLong
 c_BNGetBasicBlockEnd :: BNBasicBlockPtr -> IO CULLong
+c_BNBasicBlockCanExit :: BNBasicBlockPtr -> IO CBool
+c_BNBasicBlockHasInvalidInstructions :: BNBasicBlockPtr -> IO CBool
 c_BNGetBasicBlockFunction :: BNBasicBlockPtr -> IO BNFunctionPtr
 c_BNGetProduct :: IO CString
 c_BNLoadFilename :: CString -> CBool -> CString -> BNProgressFunctionPtr -> Ptr () -> IO BNBinaryViewPtr
@@ -2316,12 +2356,14 @@ getSettingsFileName :: IO String
 c_BNGetFileForView :: BNBinaryViewPtr -> IO BNFileMetaDataPtr
 closeFile :: BNFileMetaDataPtr -> IO ()
 getFileForView :: BNBinaryViewPtr -> IO BNFileMetaDataPtr
-c_BNGetBasicBlockOutgoingEdges :: BNBasicBlockPtr -> Ptr CULLong -> IO BNBasicBlockEdgePtr
-c_BNGetBasicBlockIncomingEdges :: BNBasicBlockPtr -> Ptr CULLong -> IO BNBasicBlockEdgePtr
+c_BNGetBasicBlockOutgoingEdges :: BNBasicBlockPtr -> Ptr CSize -> IO BNBasicBlockEdgePtr
+c_BNGetBasicBlockIncomingEdges :: BNBasicBlockPtr -> Ptr CSize -> IO BNBasicBlockEdgePtr
 c_BNGetMediumLevelILSSAVarDefinition :: BNMlilSSAFunctionPtr -> Ptr BNVariable -> CSize -> IO CSize
 c_BNGetMediumLevelILSSAVarUses :: BNMlilSSAFunctionPtr -> Ptr BNVariable -> CULLong -> Ptr CULLong -> IO (Ptr CSize)
 c_BNGetMediumLevelILVariables :: BNMlilSSAFunctionPtr -> Ptr CSize -> IO (Ptr BNVariable)
 c_BNGetMediumLevelILAliasedVariables :: BNMlilSSAFunctionPtr -> Ptr CSize -> IO (Ptr BNVariable)
+c_BNGetMediumLevelILExprCount :: BNMlilFunctionPtr -> IO CSize
+c_BNGetMediumLevelILSSAExprCount :: BNMlilSSAFunctionPtr -> IO CSize
 c_BNGetFunctionParameterVariablesPtr :: Ptr BNParameterVariablesWithConfidence -> BNFunctionPtr -> IO (Ptr BNParameterVariablesWithConfidence)
 c_BNFreeParameterVariables :: Ptr BNParameterVariablesWithConfidence -> IO ()
 c_BNFreeVariableList :: Ptr BNVariable -> IO ()
@@ -2333,9 +2375,6 @@ module Binja.ReferenceSource
 codeRefs :: BNBinaryViewPtr -> Word64 -> IO [BNReferenceSource]
 instance GHC.Classes.Eq Binja.ReferenceSource.CodeReferenceList
 instance GHC.Internal.Show.Show Binja.ReferenceSource.CodeReferenceList
-
-module Binja.BasicBlock
-fromFunction :: BNMlilFunctionPtr -> IO [BNBasicBlockPtr]
 
 module Binja.Utils
 toBool :: CBool -> Bool
@@ -2448,15 +2487,35 @@ extractCallDestSymbol :: BNBinaryViewPtr -> MediumLevelILSSAInstruction -> IO (M
 instructions :: BNBinaryViewPtr -> IO [MediumLevelILSSAInstruction]
 
 -- | All instructions (children included) in a specific function.
-instructionsFromFunc :: BNMlilFunctionPtr -> IO [MediumLevelILSSAInstruction]
+instructionsFromFunc :: BNMlilSSAFunctionPtr -> IO [MediumLevelILSSAInstruction]
 
 -- | All top-level instructions in a specific function (children not
 --   included).
-instructionsFromFuncNoChildren :: BNMlilFunctionPtr -> IO [MediumLevelILSSAInstruction]
+instructionsFromFuncNoChildren :: BNMlilSSAFunctionPtr -> IO [MediumLevelILSSAInstruction]
 
 -- | Deconstructs the provided instruction to derive the list of all child
 --   instructions.
 children :: MediumLevelILSSAInstruction -> [MediumLevelILSSAInstruction]
+
+module Binja.BasicBlock
+fromMlilFunction :: BNMlilFunctionPtr -> IO [BNBasicBlockPtr]
+fromMlilSSAFunction :: BNMlilSSAFunctionPtr -> IO [BNBasicBlockPtr]
+outgoingEdges :: BNBasicBlockPtr -> IO [BNBasicBlockEdge]
+incomingEdges :: BNBasicBlockPtr -> IO [BNBasicBlockEdge]
+fromBlockPtr :: BNBasicBlockPtr -> IO BasicBlockMlilSSA
+fromBlockEdge :: BNBasicBlockEdge -> IO BasicBlockEdge
+
+module Binja.ControlFlowGraph
+create :: BNMlilSSAFunctionPtr -> IO CFGContext
+
+-- | List of blocks making up function
+blocks :: CFGContext -> [BasicBlockMlilSSA]
+
+-- | Number of nodes
+order :: CFGContext -> Int
+
+-- | Numer of edges
+size :: CFGContext -> Int
 
 
 -- | <tt>Binja.AnalysisContext</tt> extracts and lifts low level types from
@@ -2508,6 +2567,18 @@ create :: String -> String -> IO AnalysisContext
 -- | Acquire the symbol at address if one exists.
 symbolAt :: AnalysisContext -> Word64 -> Maybe Symbol
 
+-- | Given a function context iterate all instructions to:
+--   
+--   <ul>
+--   <li>Find call instructions</li>
+--   <li>Resolve symbols which are called when possible via
+--   extractCallDestSymbol</li>
+--   </ul>
+--   
+--   <b>Assumption</b>: It is assumed the function context is present in
+--   the functions field of AnalysisContext.
+callers :: AnalysisContext -> FunctionContext -> Set Symbol
+
 -- | Given a call instruction attempt to recover the destination symbol
 --   (symbol that is called). There are many patterns that could occur.
 --   Currently only constant destinations are supported. In the future a
@@ -2520,19 +2591,49 @@ extractCallDestSymbol :: AnalysisContext -> MediumLevelILSSAInstruction -> Maybe
 close :: AnalysisContext -> IO ()
 
 module Callgraph
-create :: BNBinaryViewPtr -> IO Graph
+
+-- | Derive a callgraph from an AnalysisContext. <b>Note</b>: Not all
+--   runtime evaluated call destinations will be recovered via
+--   Binja.AnalysisContext.callers.
+create :: AnalysisContext -> Graph
 type Graph = Map Vertex Set Vertex
 type Vertex = Symbol
 vertices :: Graph -> [Vertex]
 neighbors :: Graph -> Vertex -> Maybe (Set Vertex)
+
+-- | Filter all children that satisfy the predicate
 filter :: (Set Vertex -> Bool) -> Graph -> Graph
+
+-- | Filter all keys/values that satisfy the predicate
 filterWithKey :: (Vertex -> Set Vertex -> Bool) -> Graph -> Graph
+
+-- | List of recursive vertex
 recursive :: Graph -> [Vertex]
+
+-- | List of vertex with no children
 leaf :: Graph -> [Vertex]
+
+-- | List of symbols which call source vertex
 callers :: Graph -> Vertex -> [Vertex]
+
+-- | List of symbols which source vertex calls
 callees :: Graph -> Vertex -> [Vertex]
+
+-- | Find the vertex with the maximum sum of callers. If multiple vertex
+--   share the same maximum caller sum return the first vertex found of
+--   maximum sum.
 mostCalled :: Graph -> Maybe Vertex
+
+-- | Find the vertex with the maximum sum of callers and callees. If
+--   multiple vertex share the same maximum sum return the first vertex
+--   found of maximum sum.
 mostConnected :: Graph -> Maybe Vertex
+
+-- | Is destination vertex reachable from source vertex
 reachable :: Graph -> Vertex -> Vertex -> Bool
+
+-- | Number of nodes
 order :: Graph -> Int
+
+-- | Numer of edges
 size :: Graph -> Int

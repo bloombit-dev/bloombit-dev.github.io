@@ -15,12 +15,12 @@
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">True</span></span><span>
 </span><span id="line-12"></span><span>
-</span><span id="line-13"></span><span id="local-6989586621679449704"><span class="annot"><a href="Binja.Utils.html#ptrToMaybe"><span class="hs-identifier hs-type">ptrToMaybe</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ptr</span></span><span> </span><span class="annot"><a href="#local-6989586621679449704"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ptr</span></span><span> </span><span class="annot"><a href="#local-6989586621679449704"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span></span><span>
+</span><span id="line-13"></span><span id="local-6989586621679452232"><span class="annot"><a href="Binja.Utils.html#ptrToMaybe"><span class="hs-identifier hs-type">ptrToMaybe</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ptr</span></span><span> </span><span class="annot"><a href="#local-6989586621679452232"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ptr</span></span><span> </span><span class="annot"><a href="#local-6989586621679452232"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span></span><span>
 </span><span id="line-14"></span><span id="ptrToMaybe"><span class="annot"><span class="annottext">ptrToMaybe :: forall a. Ptr a -&gt; Maybe (Ptr a)
-</span><a href="Binja.Utils.html#ptrToMaybe"><span class="hs-identifier hs-var hs-var">ptrToMaybe</span></a></span></span><span> </span><span id="local-6989586621679449718"><span class="annot"><span class="annottext">Ptr a
-</span><a href="#local-6989586621679449718"><span class="hs-identifier hs-var">p</span></a></span></span><span>
+</span><a href="Binja.Utils.html#ptrToMaybe"><span class="hs-identifier hs-var hs-var">ptrToMaybe</span></a></span></span><span> </span><span id="local-6989586621679452246"><span class="annot"><span class="annottext">Ptr a
+</span><a href="#local-6989586621679452246"><span class="hs-identifier hs-var">p</span></a></span></span><span>
 </span><span id="line-15"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Ptr a
-</span><a href="#local-6989586621679449718"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="annot"><span class="annottext">Ptr a -&gt; Ptr a -&gt; Bool
+</span><a href="#local-6989586621679452246"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="annot"><span class="annottext">Ptr a -&gt; Ptr a -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Ptr a
 forall a. Ptr a
@@ -31,5 +31,5 @@ forall a. Maybe a
 </span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Ptr a -&gt; Maybe (Ptr a)
 forall a. a -&gt; Maybe a
 </span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">Ptr a
-</span><a href="#local-6989586621679449718"><span class="hs-identifier hs-var">p</span></a></span><span>
+</span><a href="#local-6989586621679452246"><span class="hs-identifier hs-var">p</span></a></span><span>
 </span><span id="line-17"></span></pre></body></html>
