@@ -672,12 +672,17 @@ ParameterVars :: [BNVariable] -> Int -> ParameterVars
 
 -- | Central abstraction of Beluga
 data AnalysisContext
-AnalysisContext :: BNBinaryViewPtr -> [FunctionContext] -> [Symbol] -> [String] -> AnalysisContext
+AnalysisContext :: BNBinaryViewPtr -> [FunctionContext] -> Maybe FunctionContext -> [FunctionContext] -> [Symbol] -> [String] -> AnalysisContext
 
 -- | Binary View pointer which is the greatest common ancestor for all
 --   other types.
 [viewHandle] :: AnalysisContext -> BNBinaryViewPtr
 [functions] :: AnalysisContext -> [FunctionContext]
+[entryFunction] :: AnalysisContext -> Maybe FunctionContext
+
+-- | List of entry functions like init_array, fini_array, TLS callbacks,
+--   etc. Exported functions in shared objects not included.
+[entryFunctions] :: AnalysisContext -> [FunctionContext]
 [symbols] :: AnalysisContext -> [Symbol]
 [strings] :: AnalysisContext -> [String]
 
@@ -2267,6 +2272,8 @@ c_BNGetSymbolAddress :: BNSymbolPtr -> IO Word64
 c_BNGetSymbolOrdinal :: BNSymbolPtr -> IO CInt
 c_BNIsSymbolAutoDefined :: BNSymbolPtr -> IO CBool
 c_BNGetSymbolByAddress :: BNBinaryViewPtr -> Word64 -> BNNameSpacePtr -> IO BNSymbolPtr
+c_BNGetAnalysisEntryPoint :: BNBinaryViewPtr -> IO BNFunctionPtr
+c_BNGetAllEntryFunctions :: BNBinaryViewPtr -> Ptr CSize -> IO (Ptr BNFunctionPtr)
 c_BNMediumLevelILGetInstructionStart :: BNMlilFunctionPtr -> BNArchPtr -> Word64 -> IO CSize
 c_BNGetMediumLevelILInstructionCount :: BNMlilFunctionPtr -> IO CSize
 c_BNGetMediumLevelILSSAInstructionCount :: BNMlilSSAFunctionPtr -> IO CSize
@@ -2431,6 +2438,8 @@ updateAnalysis :: BNBinaryViewPtr -> IO ()
 updateAnalysisAndWait :: BNBinaryViewPtr -> IO ()
 abortAnalysis :: BNBinaryViewPtr -> IO ()
 functions :: BNBinaryViewPtr -> IO [BNFunctionPtr]
+entryFunctions :: BNBinaryViewPtr -> IO [BNFunctionPtr]
+entryFunction :: BNBinaryViewPtr -> IO (Maybe BNFunctionPtr)
 functionsContaining :: BNBinaryViewPtr -> Word64 -> IO [BNFunctionPtr]
 functionsAt :: BNBinaryViewPtr -> Word64 -> IO [BNFunctionPtr]
 functionsByName :: BNBinaryViewPtr -> String -> IO [BNFunctionPtr]
