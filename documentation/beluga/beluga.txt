@@ -6,7 +6,77 @@
 @package beluga
 @version 0.1
 
-module Binja.Types
+module Binja.Types.Arch
+data Architecture
+Thumb2 :: Architecture
+Thumb2eb :: Architecture
+Armv7 :: Architecture
+Armv7eb :: Architecture
+Arm64 :: Architecture
+X86 :: Architecture
+Hexagon :: Architecture
+Mipsel32 :: Architecture
+Mips32 :: Architecture
+R5900l :: Architecture
+Mips3 :: Architecture
+Mipsel3 :: Architecture
+Mipsel64 :: Architecture
+Mips64 :: Architecture
+CaviumMips64 :: Architecture
+CaviumMipsel64 :: Architecture
+Rv32gc :: Architecture
+Rv32gcWCH :: Architecture
+Rv64gc :: Architecture
+data Intrinsic
+IntrinsicArmv7 :: Armv7Intrinsic -> Intrinsic
+IntrinsicArm64 :: Arm64Intrinsic -> Intrinsic
+IntrinsicArmNeon :: ArmNeonIntrinsic -> Intrinsic
+IntrinsicX86 :: X86Intrinsic -> Intrinsic
+IntrinsicHexagon :: HexagonIntrinsic -> Intrinsic
+IntrinsicMips :: MipsIntrinsic -> Intrinsic
+IntrinsicRiscv :: RiscvIntrinsic -> Intrinsic
+getArch :: String -> IO Architecture
+
+-- | Note: Thumb2, Armv7 and big endian variants share the same set of
+--   intrinsics
+getIntrinsic :: Architecture -> CSize -> IO Intrinsic
+type BNArchPtr = Ptr BNArch_
+instance GHC.Internal.Enum.Enum Binja.Types.Arch.Arm64Intrinsic
+instance GHC.Internal.Enum.Enum Binja.Types.Arch.ArmNeonIntrinsic
+instance GHC.Internal.Enum.Enum Binja.Types.Arch.Armv7Intrinsic
+instance GHC.Internal.Enum.Enum Binja.Types.Arch.HexagonIntrinsic
+instance GHC.Internal.Enum.Enum Binja.Types.Arch.MipsIntrinsic
+instance GHC.Internal.Enum.Enum Binja.Types.Arch.RiscvIntrinsic
+instance GHC.Internal.Enum.Enum Binja.Types.Arch.X86Intrinsic
+instance GHC.Classes.Eq Binja.Types.Arch.Architecture
+instance GHC.Classes.Eq Binja.Types.Arch.Arm64Intrinsic
+instance GHC.Classes.Eq Binja.Types.Arch.ArmNeonIntrinsic
+instance GHC.Classes.Eq Binja.Types.Arch.Armv7Intrinsic
+instance GHC.Classes.Eq Binja.Types.Arch.HexagonIntrinsic
+instance GHC.Classes.Eq Binja.Types.Arch.Intrinsic
+instance GHC.Classes.Eq Binja.Types.Arch.MipsIntrinsic
+instance GHC.Classes.Eq Binja.Types.Arch.RiscvIntrinsic
+instance GHC.Classes.Eq Binja.Types.Arch.X86Intrinsic
+instance GHC.Classes.Ord Binja.Types.Arch.Architecture
+instance GHC.Classes.Ord Binja.Types.Arch.Arm64Intrinsic
+instance GHC.Classes.Ord Binja.Types.Arch.ArmNeonIntrinsic
+instance GHC.Classes.Ord Binja.Types.Arch.Armv7Intrinsic
+instance GHC.Classes.Ord Binja.Types.Arch.HexagonIntrinsic
+instance GHC.Classes.Ord Binja.Types.Arch.Intrinsic
+instance GHC.Classes.Ord Binja.Types.Arch.MipsIntrinsic
+instance GHC.Classes.Ord Binja.Types.Arch.RiscvIntrinsic
+instance GHC.Classes.Ord Binja.Types.Arch.X86Intrinsic
+instance GHC.Internal.Show.Show Binja.Types.Arch.Architecture
+instance GHC.Internal.Show.Show Binja.Types.Arch.Arm64Intrinsic
+instance GHC.Internal.Show.Show Binja.Types.Arch.ArmNeonIntrinsic
+instance GHC.Internal.Show.Show Binja.Types.Arch.Armv7Intrinsic
+instance GHC.Internal.Show.Show Binja.Types.Arch.HexagonIntrinsic
+instance GHC.Internal.Show.Show Binja.Types.Arch.Intrinsic
+instance GHC.Internal.Show.Show Binja.Types.Arch.MipsIntrinsic
+instance GHC.Internal.Show.Show Binja.Types.Arch.RiscvIntrinsic
+instance GHC.Internal.Show.Show Binja.Types.Arch.X86Intrinsic
+
+module Binja.Types.Core
 
 -- | Haskell type representing the C <tt>size_t</tt> type. <i>(The concrete
 --   types of <a>Foreign.C.Types#platform</a> are platform-specific.)</i>
@@ -299,15 +369,69 @@ FlagVariableSourceType :: BNVariableSourceType
 type BNDataBufferPtr = Ptr BNDataBuffer_
 type BNReferenceSourcePtr = Ptr BNReferenceSource_
 type BNArchPtr = Ptr BNArch_
+data DataVariable
+DataVariable :: !Word64 -> !BNTypeClass -> !Bool -> !Word8 -> !Word64 -> !CSize -> BNBoolWithConfidence -> BNBoolWithConfidence -> BNBoolWithConfidence -> Maybe ByteString -> DataVariable
+[address] :: DataVariable -> !Word64
+[ty] :: DataVariable -> !BNTypeClass
+[autoDiscovered] :: DataVariable -> !Bool
+[typeConfidence] :: DataVariable -> !Word8
+[width] :: DataVariable -> !Word64
+[alignment] :: DataVariable -> !CSize
+[isSigned] :: DataVariable -> BNBoolWithConfidence
+[isConst] :: DataVariable -> BNBoolWithConfidence
+[isVolatile] :: DataVariable -> BNBoolWithConfidence
+[bytes] :: DataVariable -> Maybe ByteString
+data Segment
+Segment :: BNSegmentPtr -> Word64 -> Word64 -> Bool -> Bool -> Bool -> Segment
+[handle] :: Segment -> BNSegmentPtr
+[start] :: Segment -> Word64
+[end] :: Segment -> Word64
+[executable] :: Segment -> Bool
+[writable] :: Segment -> Bool
+[readable] :: Segment -> Bool
+data Section
+Section :: BNSectionPtr -> String -> Word64 -> Word64 -> BNSectionSemantics -> Word64 -> Section
+[handle] :: Section -> BNSectionPtr
+[name] :: Section -> String
+[start] :: Section -> Word64
+[end] :: Section -> Word64
+[semantics] :: Section -> BNSectionSemantics
+[align] :: Section -> Word64
+type BNSegmentPtr = Ptr BNSegment_
+type BNSectionPtr = Ptr BNSection_
+data BNTypeWithConfidence
+BNTypeWithConfidence :: BNTypePtr -> Word8 -> BNTypeWithConfidence
+[ty] :: BNTypeWithConfidence -> BNTypePtr
+[confidence] :: BNTypeWithConfidence -> Word8
+data BNBoolWithConfidence
+BNBoolWithConfidence :: Bool -> Word8 -> BNBoolWithConfidence
+[value] :: BNBoolWithConfidence -> Bool
+[confidence] :: BNBoolWithConfidence -> Word8
+data BNTypeClass
+VoidTypeClass :: BNTypeClass
+BoolTypeClass :: BNTypeClass
+IntegerTypeClass :: BNTypeClass
+FloatTypeClass :: BNTypeClass
+StructureTypeClass :: BNTypeClass
+EnumerationTypeClass :: BNTypeClass
+PointerTypeClass :: BNTypeClass
+ArrayTypeClass :: BNTypeClass
+FunctionTypeClass :: BNTypeClass
+VarArgsTypeClass :: BNTypeClass
+ValueTypeClass :: BNTypeClass
+NamedTypeReferenceClass :: BNTypeClass
+WideCharTypeClass :: BNTypeClass
+FragmentTypeClass :: BNTypeClass
+type BNTypePtr = Ptr BNType_
 type BNMlilFunctionPtr = Ptr BNMlilFunction_
 type BNMlilSSAFunctionPtr = Ptr BNMlilSSAFunction_
 type BNLlilFunctionPtr = Ptr BNLlilFunction_
 type BNBasicBlockPtr = Ptr BNBasicBlock_
 data BasicBlockMlilSSA
-BasicBlockMlilSSA :: !BNBasicBlockPtr -> !CSize -> !CSize -> !Bool -> !Bool -> BasicBlockMlilSSA
+BasicBlockMlilSSA :: !BNBasicBlockPtr -> !CSize -> [MediumLevelILSSAInstruction] -> !Bool -> !Bool -> BasicBlockMlilSSA
 [handle] :: BasicBlockMlilSSA -> !BNBasicBlockPtr
 [start] :: BasicBlockMlilSSA -> !CSize
-[end] :: BasicBlockMlilSSA -> !CSize
+[instructions] :: BasicBlockMlilSSA -> [MediumLevelILSSAInstruction]
 [canExit] :: BasicBlockMlilSSA -> !Bool
 [hasInvalidInstructions] :: BasicBlockMlilSSA -> !Bool
 type BNBasicBlockEdgePtr = Ptr BNBasicBlockEdge
@@ -485,6 +609,17 @@ LLIL_REG_PHI :: BNLowLevelILOperation
 LLIL_REG_STACK_PHI :: BNLowLevelILOperation
 LLIL_FLAG_PHI :: BNLowLevelILOperation
 LLIL_MEM_PHI :: BNLowLevelILOperation
+LLIL_BSWAP :: BNLowLevelILOperation
+LLIL_POPCNT :: BNLowLevelILOperation
+LLIL_CLZ :: BNLowLevelILOperation
+LLIL_CTZ :: BNLowLevelILOperation
+LLIL_RBIT :: BNLowLevelILOperation
+LLIL_CLS :: BNLowLevelILOperation
+LLIL_MINS :: BNLowLevelILOperation
+LLIL_MAXS :: BNLowLevelILOperation
+LLIL_MINU :: BNLowLevelILOperation
+LLIL_MAXU :: BNLowLevelILOperation
+LLIL_ABS :: BNLowLevelILOperation
 data BNMediumLevelILInstruction
 BNMediumLevelILInstruction :: !BNMediumLevelILOperation -> !Word32 -> !Word32 -> !CSize -> !Word64 -> !Word64 -> !Word64 -> !Word64 -> !Word64 -> !Word64 -> BNMediumLevelILInstruction
 [mlOperation] :: BNMediumLevelILInstruction -> !BNMediumLevelILOperation
@@ -513,6 +648,8 @@ MLIL_VAR_FIELD :: BNMediumLevelILOperation
 MLIL_VAR_SPLIT :: BNMediumLevelILOperation
 MLIL_ADDRESS_OF :: BNMediumLevelILOperation
 MLIL_ADDRESS_OF_FIELD :: BNMediumLevelILOperation
+MLIL_PASS_BY_REF :: BNMediumLevelILOperation
+MLIL_RETURN_BY_REF :: BNMediumLevelILOperation
 MLIL_CONST :: BNMediumLevelILOperation
 MLIL_CONST_DATA :: BNMediumLevelILOperation
 MLIL_CONST_PTR :: BNMediumLevelILOperation
@@ -554,10 +691,12 @@ MLIL_JUMP_TO :: BNMediumLevelILOperation
 MLIL_RET_HINT :: BNMediumLevelILOperation
 MLIL_CALL :: BNMediumLevelILOperation
 MLIL_CALL_UNTYPED :: BNMediumLevelILOperation
-MLIL_CALL_OUTPUT :: BNMediumLevelILOperation
 MLIL_CALL_PARAM :: BNMediumLevelILOperation
 MLIL_SEPARATE_PARAM_LIST :: BNMediumLevelILOperation
 MLIL_SHARED_PARAM_SLOT :: BNMediumLevelILOperation
+MLIL_VAR_OUTPUT :: BNMediumLevelILOperation
+MLIL_VAR_OUTPUT_FIELD :: BNMediumLevelILOperation
+MLIL_STORE_OUTPUT :: BNMediumLevelILOperation
 MLIL_RET :: BNMediumLevelILOperation
 MLIL_NORET :: BNMediumLevelILOperation
 MLIL_IF :: BNMediumLevelILOperation
@@ -628,6 +767,10 @@ MLIL_TAILCALL_SSA :: BNMediumLevelILOperation
 MLIL_TAILCALL_UNTYPED_SSA :: BNMediumLevelILOperation
 MLIL_CALL_PARAM_SSA :: BNMediumLevelILOperation
 MLIL_CALL_OUTPUT_SSA :: BNMediumLevelILOperation
+MLIL_VAR_OUTPUT_SSA :: BNMediumLevelILOperation
+MLIL_VAR_OUTPUT_SSA_FIELD :: BNMediumLevelILOperation
+MLIL_VAR_OUTPUT_ALIASED :: BNMediumLevelILOperation
+MLIL_VAR_OUTPUT_ALIASED_FIELD :: BNMediumLevelILOperation
 MLIL_MEMORY_INTRINSIC_OUTPUT_SSA :: BNMediumLevelILOperation
 MLIL_LOAD_SSA :: BNMediumLevelILOperation
 MLIL_LOAD_STRUCT_SSA :: BNMediumLevelILOperation
@@ -638,6 +781,18 @@ MLIL_MEMORY_INTRINSIC_SSA :: BNMediumLevelILOperation
 MLIL_FREE_VAR_SLOT_SSA :: BNMediumLevelILOperation
 MLIL_VAR_PHI :: BNMediumLevelILOperation
 MLIL_MEM_PHI :: BNMediumLevelILOperation
+MLIL_BLOCK_TO_EXPAND :: BNMediumLevelILOperation
+MLIL_BSWAP :: BNMediumLevelILOperation
+MLIL_POPCNT :: BNMediumLevelILOperation
+MLIL_CLZ :: BNMediumLevelILOperation
+MLIL_CTZ :: BNMediumLevelILOperation
+MLIL_RBIT :: BNMediumLevelILOperation
+MLIL_CLS :: BNMediumLevelILOperation
+MLIL_MINS :: BNMediumLevelILOperation
+MLIL_MAXS :: BNMediumLevelILOperation
+MLIL_MINU :: BNMediumLevelILOperation
+MLIL_MAXU :: BNMediumLevelILOperation
+MLIL_ABS :: BNMediumLevelILOperation
 data BNPossibleValueSet
 BNPossibleValueSet :: !BNRegisterValueType -> !Int64 -> !Int64 -> !CSize -> !BNValueRangePtr -> !Ptr CInt -> !BNLookupTableEntryPtr -> !CSize -> BNPossibleValueSet
 [pvsRegisterValTy] :: BNPossibleValueSet -> !BNRegisterValueType
@@ -663,8 +818,6 @@ BNParameterVariablesWithConfidence :: !Ptr BNVariable -> !CSize -> !Word8 -> BNP
 [pvCount] :: BNParameterVariablesWithConfidence -> !CSize
 [pvConfidence] :: BNParameterVariablesWithConfidence -> !Word8
 data Architecture
-Arm64 :: Architecture
-X86 :: Architecture
 data ParameterVars
 ParameterVars :: [BNVariable] -> Int -> ParameterVars
 [vars] :: ParameterVars -> [BNVariable]
@@ -672,11 +825,14 @@ ParameterVars :: [BNVariable] -> Int -> ParameterVars
 
 -- | Central abstraction of Beluga
 data AnalysisContext
-AnalysisContext :: BNBinaryViewPtr -> [FunctionContext] -> Maybe FunctionContext -> [FunctionContext] -> [Symbol] -> [String] -> AnalysisContext
+AnalysisContext :: BNBinaryViewPtr -> String -> [FunctionContext] -> Maybe FunctionContext -> [FunctionContext] -> [Symbol] -> [String] -> [DataVariable] -> Word64 -> Word64 -> [Segment] -> [Section] -> AnalysisContext
 
 -- | Binary View pointer which is the greatest common ancestor for all
 --   other types.
 [viewHandle] :: AnalysisContext -> BNBinaryViewPtr
+
+-- | Path to file used to derive AnalysisContext
+[filename] :: AnalysisContext -> String
 [functions] :: AnalysisContext -> [FunctionContext]
 [entryFunction] :: AnalysisContext -> Maybe FunctionContext
 
@@ -685,6 +841,11 @@ AnalysisContext :: BNBinaryViewPtr -> [FunctionContext] -> Maybe FunctionContext
 [entryFunctions] :: AnalysisContext -> [FunctionContext]
 [symbols] :: AnalysisContext -> [Symbol]
 [strings] :: AnalysisContext -> [String]
+[dataVars] :: AnalysisContext -> [DataVariable]
+[imageBase] :: AnalysisContext -> Word64
+[entryPoint] :: AnalysisContext -> Word64
+[segments] :: AnalysisContext -> [Segment]
+[sections] :: AnalysisContext -> [Section]
 
 -- | Higher level abstraction of a medium level IL SSA variant function
 data FunctionContext
@@ -787,6 +948,9 @@ BNReferenceSource :: !BNFunctionPtr -> !BNArchPtr -> !Word64 -> BNReferenceSourc
 [bnAddr] :: BNReferenceSource -> !Word64
 alignmentS :: Int
 getArch :: String -> IO Architecture
+
+-- | Note: Thumb2, Armv7 and big endian variants share the same set of
+--   intrinsics
 getIntrinsic :: Architecture -> CSize -> IO Intrinsic
 data CoreMediumLevelILInstruction
 CoreMediumLevelILInstruction :: BNMediumLevelILInstruction -> BNMlilSSAFunctionPtr -> CSize -> CoreMediumLevelILInstruction
@@ -812,13 +976,14 @@ SetVar :: SetVar -> MediumLevelILSSAInstruction
 RegisterStack :: RegisterStack -> MediumLevelILSSAInstruction
 IntrinsicInstruction :: IntrinsicInstruction -> MediumLevelILSSAInstruction
 MediumLevelILCallOutputSsa :: MediumLevelILCallOutputSsaRec -> MediumLevelILSSAInstruction
-MediumLevelILCallOutput :: MediumLevelILCallOutputRec -> MediumLevelILSSAInstruction
 MediumLevelILMemoryIntrinsicOutputSsa :: MediumLevelILMemoryIntrinsicOutputSsaRec -> MediumLevelILSSAInstruction
 MediumLevelILCallParamSsa :: MediumLevelILCallParamSsaRec -> MediumLevelILSSAInstruction
 MediumLevelILCallParam :: MediumLevelILCallParamRec -> MediumLevelILSSAInstruction
 MediumLevelILNop :: MediumLevelILNopRec -> MediumLevelILSSAInstruction
 MediumLevelILAddressOf :: MediumLevelILAddressOfRec -> MediumLevelILSSAInstruction
 MediumLevelILAddressOfField :: MediumLevelILAddressOfFieldRec -> MediumLevelILSSAInstruction
+MediumLevelILPassByRef :: MediumLevelILPassByRefRec -> MediumLevelILSSAInstruction
+MediumLevelILReturnByRef :: MediumLevelILReturnByRefRec -> MediumLevelILSSAInstruction
 MediumLevelILMuluDp :: MediumLevelILMuluDpRec -> MediumLevelILSSAInstruction
 MediumLevelILMulsDp :: MediumLevelILMulsDpRec -> MediumLevelILSSAInstruction
 MediumLevelILDivuDp :: MediumLevelILDivuDpRec -> MediumLevelILSSAInstruction
@@ -836,11 +1001,11 @@ MediumLevelILUndef :: MediumLevelILUndefRec -> MediumLevelILSSAInstruction
 MediumLevelILUnimpl :: MediumLevelILUnimplRec -> MediumLevelILSSAInstruction
 MediumLevelILSeparateParamList :: MediumLevelILSeparateParamListRec -> MediumLevelILSSAInstruction
 MediumLevelILSharedParamSlot :: MediumLevelILSharedParamSlotRec -> MediumLevelILSSAInstruction
+MediumLevelILVarOutputSsa :: MediumLevelILVarOutputSsaRec -> MediumLevelILSSAInstruction
+MediumLevelILBlockToExpand :: MediumLevelILBlockToExpandRec -> MediumLevelILSSAInstruction
 data Localcall
-MediumLevelILCall :: MediumLevelILCallRec -> Localcall
 MediumLevelILCallSsa :: MediumLevelILCallSsaRec -> Localcall
 MediumLevelILCallUntypedSsa :: MediumLevelILCallUntypedSsaRec -> Localcall
-MediumLevelILCallUntyped :: MediumLevelILCallUntypedRec -> Localcall
 data Constant
 MediumLevelILConst :: MediumLevelILConstRec -> Constant
 MediumLevelILConstPtr :: MediumLevelILConstPtrRec -> Constant
@@ -904,6 +1069,17 @@ MediumLevelILFadd :: MediumLevelILFaddRec -> Arithmetic
 MediumLevelILFsub :: MediumLevelILFsubRec -> Arithmetic
 MediumLevelILFmul :: MediumLevelILFmulRec -> Arithmetic
 MediumLevelILFdiv :: MediumLevelILFdivRec -> Arithmetic
+MediumLevelILBswap :: MediumLevelILBswapRec -> Arithmetic
+MediumLevelILPopcnt :: MediumLevelILPopcntRec -> Arithmetic
+MediumLevelILClz :: MediumLevelILClzRec -> Arithmetic
+MediumLevelILCtz :: MediumLevelILCtzRec -> Arithmetic
+MediumLevelILRbit :: MediumLevelILRbitRec -> Arithmetic
+MediumLevelILCls :: MediumLevelILClsRec -> Arithmetic
+MediumLevelILMins :: MediumLevelILMinsRec -> Arithmetic
+MediumLevelILMaxs :: MediumLevelILMaxsRec -> Arithmetic
+MediumLevelILMinu :: MediumLevelILMinuRec -> Arithmetic
+MediumLevelILMaxu :: MediumLevelILMaxuRec -> Arithmetic
+MediumLevelILAbs :: MediumLevelILAbsRec -> Arithmetic
 data Terminal
 MediumLevelILNoret :: MediumLevelILNoretRec -> Terminal
 MediumLevelILBp :: MediumLevelILBpRec -> Terminal
@@ -936,6 +1112,7 @@ MediumLevelILStore :: MediumLevelILStoreRec -> Store
 MediumLevelILStoreStruct :: MediumLevelILStoreStructRec -> Store
 MediumLevelILStoreSsa :: MediumLevelILStoreSsaRec -> Store
 MediumLevelILStoreStructSsa :: MediumLevelILStoreStructSsaRec -> Store
+MediumLevelILStoreOutput :: MediumLevelILStoreOutputRec -> Store
 data Memory
 MediumLevelILUnimplMem :: MediumLevelILUnimplMemRec -> Memory
 MediumLevelILMemPhi :: MediumLevelILMemPhiRec -> Memory
@@ -961,9 +1138,14 @@ MediumLevelILSetVarSplitSsa :: MediumLevelILSetVarSplitSsaRec -> SetVar
 MediumLevelILSetVarAliasedField :: MediumLevelILSetVarAliasedFieldRec -> SetVar
 MediumLevelILSetVarField :: MediumLevelILSetVarFieldRec -> SetVar
 MediumLevelILSetVarSplit :: MediumLevelILSetVarSplitRec -> SetVar
+MediumLevelILVarOutputField :: MediumLevelILVarOutputFieldRec -> SetVar
+MediumLevelILVarOutputSsaField :: MediumLevelILVarOutputSsaFieldRec -> SetVar
+MediumLevelILVarOutputAliased :: MediumLevelILVarOutputAliasedRec -> SetVar
+MediumLevelILVarOutputAliasedField :: MediumLevelILVarOutputAliasedFieldRec -> SetVar
 data RegisterStack
 MediumLevelILFreeVarSlot :: MediumLevelILFreeVarSlotRec -> RegisterStack
 MediumLevelILFreeVarSlotSsa :: MediumLevelILFreeVarSlotSsaRec -> RegisterStack
+MediumLevelILVarOutput :: MediumLevelILVarOutputRec -> RegisterStack
 data IntrinsicInstruction
 MediumLevelILIntrinsic :: MediumLevelILIntrinsicRec -> IntrinsicInstruction
 MediumLevelILIntrinsicSsa :: MediumLevelILIntrinsicSsaRec -> IntrinsicInstruction
@@ -980,10 +1162,28 @@ MediumLevelILCallOutputSsaRec :: Int -> [BNSSAVariable] -> CoreMediumLevelILInst
 [destMemory] :: MediumLevelILCallOutputSsaRec -> Int
 [dest] :: MediumLevelILCallOutputSsaRec -> [BNSSAVariable]
 [core] :: MediumLevelILCallOutputSsaRec -> CoreMediumLevelILInstruction
-data MediumLevelILCallOutputRec
-MediumLevelILCallOutputRec :: [BNVariable] -> CoreMediumLevelILInstruction -> MediumLevelILCallOutputRec
-[dest] :: MediumLevelILCallOutputRec -> [BNVariable]
-[core] :: MediumLevelILCallOutputRec -> CoreMediumLevelILInstruction
+data MediumLevelILVarOutputSsaRec
+MediumLevelILVarOutputSsaRec :: BNSSAVariable -> BNSSAVariable -> CoreMediumLevelILInstruction -> MediumLevelILVarOutputSsaRec
+[dest] :: MediumLevelILVarOutputSsaRec -> BNSSAVariable
+[var] :: MediumLevelILVarOutputSsaRec -> BNSSAVariable
+[core] :: MediumLevelILVarOutputSsaRec -> CoreMediumLevelILInstruction
+data MediumLevelILVarOutputSsaFieldRec
+MediumLevelILVarOutputSsaFieldRec :: BNSSAVariable -> BNSSAVariable -> Int -> CoreMediumLevelILInstruction -> MediumLevelILVarOutputSsaFieldRec
+[dest] :: MediumLevelILVarOutputSsaFieldRec -> BNSSAVariable
+[prev] :: MediumLevelILVarOutputSsaFieldRec -> BNSSAVariable
+[offset] :: MediumLevelILVarOutputSsaFieldRec -> Int
+[core] :: MediumLevelILVarOutputSsaFieldRec -> CoreMediumLevelILInstruction
+data MediumLevelILVarOutputAliasedRec
+MediumLevelILVarOutputAliasedRec :: BNSSAVariable -> BNSSAVariable -> CoreMediumLevelILInstruction -> MediumLevelILVarOutputAliasedRec
+[dest] :: MediumLevelILVarOutputAliasedRec -> BNSSAVariable
+[prev] :: MediumLevelILVarOutputAliasedRec -> BNSSAVariable
+[core] :: MediumLevelILVarOutputAliasedRec -> CoreMediumLevelILInstruction
+data MediumLevelILVarOutputAliasedFieldRec
+MediumLevelILVarOutputAliasedFieldRec :: BNSSAVariable -> BNSSAVariable -> Int -> CoreMediumLevelILInstruction -> MediumLevelILVarOutputAliasedFieldRec
+[dest] :: MediumLevelILVarOutputAliasedFieldRec -> BNSSAVariable
+[prev] :: MediumLevelILVarOutputAliasedFieldRec -> BNSSAVariable
+[offset] :: MediumLevelILVarOutputAliasedFieldRec -> Int
+[core] :: MediumLevelILVarOutputAliasedFieldRec -> CoreMediumLevelILInstruction
 data MediumLevelILConstPtrRec
 MediumLevelILConstPtrRec :: Int -> CoreMediumLevelILInstruction -> MediumLevelILConstPtrRec
 [constant] :: MediumLevelILConstPtrRec -> Int
@@ -1035,6 +1235,14 @@ MediumLevelILAddressOfFieldRec :: BNVariable -> Int -> CoreMediumLevelILInstruct
 [src] :: MediumLevelILAddressOfFieldRec -> BNVariable
 [offset] :: MediumLevelILAddressOfFieldRec -> Int
 [core] :: MediumLevelILAddressOfFieldRec -> CoreMediumLevelILInstruction
+data MediumLevelILPassByRefRec
+MediumLevelILPassByRefRec :: MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILPassByRefRec
+[src] :: MediumLevelILPassByRefRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILPassByRefRec -> CoreMediumLevelILInstruction
+data MediumLevelILReturnByRefRec
+MediumLevelILReturnByRefRec :: MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILReturnByRefRec
+[src] :: MediumLevelILReturnByRefRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILReturnByRefRec -> CoreMediumLevelILInstruction
 data MediumLevelILLoadSsaRec
 MediumLevelILLoadSsaRec :: MediumLevelILSSAInstruction -> Int -> CoreMediumLevelILInstruction -> MediumLevelILLoadSsaRec
 [src] :: MediumLevelILLoadSsaRec -> MediumLevelILSSAInstruction
@@ -1525,12 +1733,6 @@ data MediumLevelILRetHintRec
 MediumLevelILRetHintRec :: MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILRetHintRec
 [dest] :: MediumLevelILRetHintRec -> MediumLevelILSSAInstruction
 [core] :: MediumLevelILRetHintRec -> CoreMediumLevelILInstruction
-data MediumLevelILCallRec
-MediumLevelILCallRec :: [BNVariable] -> MediumLevelILSSAInstruction -> [MediumLevelILSSAInstruction] -> CoreMediumLevelILInstruction -> MediumLevelILCallRec
-[output] :: MediumLevelILCallRec -> [BNVariable]
-[dest] :: MediumLevelILCallRec -> MediumLevelILSSAInstruction
-[params] :: MediumLevelILCallRec -> [MediumLevelILSSAInstruction]
-[core] :: MediumLevelILCallRec -> CoreMediumLevelILInstruction
 data MediumLevelILBpRec
 MediumLevelILBpRec :: CoreMediumLevelILInstruction -> MediumLevelILBpRec
 [core] :: MediumLevelILBpRec -> CoreMediumLevelILInstruction
@@ -1578,13 +1780,6 @@ MediumLevelILCallUntypedSsaRec :: [BNSSAVariable] -> Int -> MediumLevelILSSAInst
 [paramsSrcMemory] :: MediumLevelILCallUntypedSsaRec -> Int
 [stack] :: MediumLevelILCallUntypedSsaRec -> MediumLevelILSSAInstruction
 [core] :: MediumLevelILCallUntypedSsaRec -> CoreMediumLevelILInstruction
-data MediumLevelILCallUntypedRec
-MediumLevelILCallUntypedRec :: [BNVariable] -> MediumLevelILSSAInstruction -> [MediumLevelILSSAInstruction] -> MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILCallUntypedRec
-[output] :: MediumLevelILCallUntypedRec -> [BNVariable]
-[dest] :: MediumLevelILCallUntypedRec -> MediumLevelILSSAInstruction
-[params] :: MediumLevelILCallUntypedRec -> [MediumLevelILSSAInstruction]
-[stack] :: MediumLevelILCallUntypedRec -> MediumLevelILSSAInstruction
-[core] :: MediumLevelILCallUntypedRec -> CoreMediumLevelILInstruction
 data MediumLevelILSeparateParamListRec
 MediumLevelILSeparateParamListRec :: [MediumLevelILSSAInstruction] -> CoreMediumLevelILInstruction -> MediumLevelILSeparateParamListRec
 [params] :: MediumLevelILSeparateParamListRec -> [MediumLevelILSSAInstruction]
@@ -1593,6 +1788,19 @@ data MediumLevelILSharedParamSlotRec
 MediumLevelILSharedParamSlotRec :: [MediumLevelILSSAInstruction] -> CoreMediumLevelILInstruction -> MediumLevelILSharedParamSlotRec
 [params] :: MediumLevelILSharedParamSlotRec -> [MediumLevelILSSAInstruction]
 [core] :: MediumLevelILSharedParamSlotRec -> CoreMediumLevelILInstruction
+data MediumLevelILVarOutputRec
+MediumLevelILVarOutputRec :: BNVariable -> CoreMediumLevelILInstruction -> MediumLevelILVarOutputRec
+[dest] :: MediumLevelILVarOutputRec -> BNVariable
+[core] :: MediumLevelILVarOutputRec -> CoreMediumLevelILInstruction
+data MediumLevelILVarOutputFieldRec
+MediumLevelILVarOutputFieldRec :: BNVariable -> Int -> CoreMediumLevelILInstruction -> MediumLevelILVarOutputFieldRec
+[dest] :: MediumLevelILVarOutputFieldRec -> BNVariable
+[offset] :: MediumLevelILVarOutputFieldRec -> Int
+[core] :: MediumLevelILVarOutputFieldRec -> CoreMediumLevelILInstruction
+data MediumLevelILStoreOutputRec
+MediumLevelILStoreOutputRec :: MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILStoreOutputRec
+[dest] :: MediumLevelILStoreOutputRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILStoreOutputRec -> CoreMediumLevelILInstruction
 data MediumLevelILSyscallRec
 MediumLevelILSyscallRec :: [BNVariable] -> [MediumLevelILSSAInstruction] -> CoreMediumLevelILInstruction -> MediumLevelILSyscallRec
 [output] :: MediumLevelILSyscallRec -> [BNVariable]
@@ -1672,591 +1880,702 @@ MediumLevelILMemPhiRec :: Int -> [Int] -> CoreMediumLevelILInstruction -> Medium
 [destMemory] :: MediumLevelILMemPhiRec -> Int
 [srcMemory] :: MediumLevelILMemPhiRec -> [Int]
 [core] :: MediumLevelILMemPhiRec -> CoreMediumLevelILInstruction
+data MediumLevelILBlockToExpandRec
+MediumLevelILBlockToExpandRec :: [MediumLevelILSSAInstruction] -> CoreMediumLevelILInstruction -> MediumLevelILBlockToExpandRec
+[exprs] :: MediumLevelILBlockToExpandRec -> [MediumLevelILSSAInstruction]
+[core] :: MediumLevelILBlockToExpandRec -> CoreMediumLevelILInstruction
+data MediumLevelILBswapRec
+MediumLevelILBswapRec :: MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILBswapRec
+[src] :: MediumLevelILBswapRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILBswapRec -> CoreMediumLevelILInstruction
+data MediumLevelILPopcntRec
+MediumLevelILPopcntRec :: MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILPopcntRec
+[src] :: MediumLevelILPopcntRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILPopcntRec -> CoreMediumLevelILInstruction
+data MediumLevelILClzRec
+MediumLevelILClzRec :: MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILClzRec
+[src] :: MediumLevelILClzRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILClzRec -> CoreMediumLevelILInstruction
+data MediumLevelILCtzRec
+MediumLevelILCtzRec :: MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILCtzRec
+[src] :: MediumLevelILCtzRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILCtzRec -> CoreMediumLevelILInstruction
+data MediumLevelILRbitRec
+MediumLevelILRbitRec :: MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILRbitRec
+[src] :: MediumLevelILRbitRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILRbitRec -> CoreMediumLevelILInstruction
+data MediumLevelILClsRec
+MediumLevelILClsRec :: MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILClsRec
+[src] :: MediumLevelILClsRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILClsRec -> CoreMediumLevelILInstruction
+data MediumLevelILMinsRec
+MediumLevelILMinsRec :: MediumLevelILSSAInstruction -> MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILMinsRec
+[left] :: MediumLevelILMinsRec -> MediumLevelILSSAInstruction
+[right] :: MediumLevelILMinsRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILMinsRec -> CoreMediumLevelILInstruction
+data MediumLevelILMaxsRec
+MediumLevelILMaxsRec :: MediumLevelILSSAInstruction -> MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILMaxsRec
+[left] :: MediumLevelILMaxsRec -> MediumLevelILSSAInstruction
+[right] :: MediumLevelILMaxsRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILMaxsRec -> CoreMediumLevelILInstruction
+data MediumLevelILMinuRec
+MediumLevelILMinuRec :: MediumLevelILSSAInstruction -> MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILMinuRec
+[left] :: MediumLevelILMinuRec -> MediumLevelILSSAInstruction
+[right] :: MediumLevelILMinuRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILMinuRec -> CoreMediumLevelILInstruction
+data MediumLevelILMaxuRec
+MediumLevelILMaxuRec :: MediumLevelILSSAInstruction -> MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILMaxuRec
+[left] :: MediumLevelILMaxuRec -> MediumLevelILSSAInstruction
+[right] :: MediumLevelILMaxuRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILMaxuRec -> CoreMediumLevelILInstruction
+data MediumLevelILAbsRec
+MediumLevelILAbsRec :: MediumLevelILSSAInstruction -> CoreMediumLevelILInstruction -> MediumLevelILAbsRec
+[src] :: MediumLevelILAbsRec -> MediumLevelILSSAInstruction
+[core] :: MediumLevelILAbsRec -> CoreMediumLevelILInstruction
+
+-- | Note: Algebra.Graph.Labelled provided by Alga will be expanded on its
+--   next release Making it a good candidate to use for the CFGContext
+--   graph type.
 data CFGContext
 CFGContext :: Map BasicBlockMlilSSA (Set BasicBlockEdge) -> BasicBlockMlilSSA -> CFGContext
 [graph] :: CFGContext -> Map BasicBlockMlilSSA (Set BasicBlockEdge)
 [entry] :: CFGContext -> BasicBlockMlilSSA
-instance GHC.Internal.Enum.Enum Binja.Types.Arm64Intrinsic
-instance GHC.Internal.Enum.Enum Binja.Types.ArmNeonIntrinsic
-instance GHC.Internal.Enum.Enum Binja.Types.BNBranchType
-instance GHC.Internal.Enum.Enum Binja.Types.BNLowLevelILOperation
-instance GHC.Internal.Enum.Enum Binja.Types.BNMediumLevelILOperation
-instance GHC.Internal.Enum.Enum Binja.Types.BNRegisterValueType
-instance GHC.Internal.Enum.Enum Binja.Types.BNStringType
-instance GHC.Internal.Enum.Enum Binja.Types.BNVariableSourceType
-instance GHC.Internal.Enum.Enum Binja.Types.SymbolBinding
-instance GHC.Internal.Enum.Enum Binja.Types.SymbolType
-instance GHC.Internal.Enum.Enum Binja.Types.X86Intrinsic
-instance GHC.Classes.Eq Binja.Types.Architecture
-instance GHC.Classes.Eq Binja.Types.Arithmetic
-instance GHC.Classes.Eq Binja.Types.Arm64Intrinsic
-instance GHC.Classes.Eq Binja.Types.ArmNeonIntrinsic
-instance GHC.Classes.Eq Binja.Types.BNBasicBlockEdge
-instance GHC.Classes.Eq Binja.Types.BNBranchType
-instance GHC.Classes.Eq Binja.Types.BNLowLevelILInstruction
-instance GHC.Classes.Eq Binja.Types.BNLowLevelILOperation
-instance GHC.Classes.Eq Binja.Types.BNMediumLevelILInstruction
-instance GHC.Classes.Eq Binja.Types.BNMediumLevelILOperation
-instance GHC.Classes.Eq Binja.Types.BNPossibleValueSet
-instance GHC.Classes.Eq Binja.Types.BNReferenceSource
-instance GHC.Classes.Eq Binja.Types.BNRegisterValueType
-instance GHC.Classes.Eq Binja.Types.BNSSAVariable
-instance GHC.Classes.Eq Binja.Types.BNStringRef
-instance GHC.Classes.Eq Binja.Types.BNStringType
-instance GHC.Classes.Eq Binja.Types.BNVariable
-instance GHC.Classes.Eq Binja.Types.BNVariableSourceType
-instance GHC.Classes.Eq Binja.Types.BasicBlockEdge
-instance GHC.Classes.Eq Binja.Types.BasicBlockMlilSSA
-instance GHC.Classes.Eq Binja.Types.Carry
-instance GHC.Classes.Eq Binja.Types.Comparison
-instance GHC.Classes.Eq Binja.Types.Constant
-instance GHC.Classes.Eq Binja.Types.ControlFlow
-instance GHC.Classes.Eq Binja.Types.CoreMediumLevelILInstruction
-instance GHC.Classes.Eq Binja.Types.Function
-instance GHC.Classes.Eq Binja.Types.FunctionList
-instance GHC.Classes.Eq Binja.Types.ILIntrinsic
-instance GHC.Classes.Eq Binja.Types.Intrinsic
-instance GHC.Classes.Eq Binja.Types.IntrinsicInstruction
-instance GHC.Classes.Eq Binja.Types.Load
-instance GHC.Classes.Eq Binja.Types.Localcall
-instance GHC.Classes.Eq Binja.Types.MediumLevelILAdcRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILAddOverflowRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILAddRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILAddressOfFieldRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILAddressOfRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILAndRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILAsrRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILAssertRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILAssertSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILBoolToIntRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILBpRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCallOutputRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCallOutputSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCallParamRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCallParamSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCallRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCallSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCallUntypedRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCallUntypedSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCeilRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCmpERec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCmpNeRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCmpSgeRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCmpSgtRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCmpSleRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCmpSltRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCmpUgeRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCmpUgtRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCmpUleRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILCmpUltRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILConstDataRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILConstPtrRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILConstRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILDivsDpRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILDivsRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILDivuDpRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILDivuRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILExternPtrRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFabsRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFaddRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFcmpERec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFcmpGeRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFcmpGtRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFcmpLeRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFcmpLtRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFcmpNeRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFcmpORec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFcmpUoRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFdivRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFloatConstRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFloatConvRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFloatToIntRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFloorRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFmulRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFnegRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILForceVerRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILForceVerSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFreeVarSlotRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFreeVarSlotSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFsqrtRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFsubRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILFtruncRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILGotoRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILIfRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILImportRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILIntToFloatRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILIntrinsicRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILIntrinsicSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILJumpRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILJumpToRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILLoadRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILLoadSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILLoadStructRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILLoadStructSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILLowPartRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILLslRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILLsrRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILMemPhiRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILMemoryIntrinsicOutputSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILMemoryIntrinsicSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILModsDpRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILModsRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILModuDpRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILModuRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILMulRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILMulsDpRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILMuluDpRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILMuluRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILNegRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILNopRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILNoretRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILNotRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILOrRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILRetHintRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILRetRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILRlcRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILRolRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILRorRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILRoundToIntRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILRrcRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSSAInstruction
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSbbRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSeparateParamListRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSetVarAliasedFieldRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSetVarAliasedRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSetVarFieldRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSetVarRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSetVarSplitRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSetVarSplitSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSetVarSsaFieldRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSetVarSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSharedParamSlotRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILStoreRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILStoreSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILStoreStructRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILStoreStructSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSubRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSxRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSyscallRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSyscallSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSyscallUntypedRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILSyscallUntypedSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILTailcallRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILTailcallSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILTailcallUntypedRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILTailcallUntypedSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILTestBitRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILTrapRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILUndefRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILUnimplMemRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILUnimplRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILVarAliasedFieldRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILVarAliasedRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILVarFieldRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILVarPhiRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILVarRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILVarSplitRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILVarSplitSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILVarSsaFieldRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILVarSsaRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILXorRec
-instance GHC.Classes.Eq Binja.Types.MediumLevelILZxRec
-instance GHC.Classes.Eq Binja.Types.Memory
-instance GHC.Classes.Eq Binja.Types.RegisterStack
-instance GHC.Classes.Eq Binja.Types.Return
-instance GHC.Classes.Eq Binja.Types.SetVar
-instance GHC.Classes.Eq Binja.Types.Store
-instance GHC.Classes.Eq Binja.Types.Symbol
-instance GHC.Classes.Eq Binja.Types.SymbolBinding
-instance GHC.Classes.Eq Binja.Types.SymbolList
-instance GHC.Classes.Eq Binja.Types.SymbolType
-instance GHC.Classes.Eq Binja.Types.Syscall
-instance GHC.Classes.Eq Binja.Types.Tailcall
-instance GHC.Classes.Eq Binja.Types.Terminal
-instance GHC.Classes.Eq Binja.Types.VariableInstruction
-instance GHC.Classes.Eq Binja.Types.X86Intrinsic
-instance GHC.Classes.Ord Binja.Types.Architecture
-instance GHC.Classes.Ord Binja.Types.Arithmetic
-instance GHC.Classes.Ord Binja.Types.Arm64Intrinsic
-instance GHC.Classes.Ord Binja.Types.ArmNeonIntrinsic
-instance GHC.Classes.Ord Binja.Types.BNBasicBlockEdge
-instance GHC.Classes.Ord Binja.Types.BNBranchType
-instance GHC.Classes.Ord Binja.Types.BNMediumLevelILInstruction
-instance GHC.Classes.Ord Binja.Types.BNMediumLevelILOperation
-instance GHC.Classes.Ord Binja.Types.BNPossibleValueSet
-instance GHC.Classes.Ord Binja.Types.BNRegisterValueType
-instance GHC.Classes.Ord Binja.Types.BNSSAVariable
-instance GHC.Classes.Ord Binja.Types.BNVariable
-instance GHC.Classes.Ord Binja.Types.BNVariableSourceType
-instance GHC.Classes.Ord Binja.Types.BasicBlockEdge
-instance GHC.Classes.Ord Binja.Types.BasicBlockMlilSSA
-instance GHC.Classes.Ord Binja.Types.Carry
-instance GHC.Classes.Ord Binja.Types.Comparison
-instance GHC.Classes.Ord Binja.Types.Constant
-instance GHC.Classes.Ord Binja.Types.ControlFlow
-instance GHC.Classes.Ord Binja.Types.CoreMediumLevelILInstruction
-instance GHC.Classes.Ord Binja.Types.ILIntrinsic
-instance GHC.Classes.Ord Binja.Types.Intrinsic
-instance GHC.Classes.Ord Binja.Types.IntrinsicInstruction
-instance GHC.Classes.Ord Binja.Types.Load
-instance GHC.Classes.Ord Binja.Types.Localcall
-instance GHC.Classes.Ord Binja.Types.MediumLevelILAdcRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILAddOverflowRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILAddRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILAddressOfFieldRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILAddressOfRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILAndRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILAsrRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILAssertRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILAssertSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILBoolToIntRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILBpRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCallOutputRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCallOutputSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCallParamRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCallParamSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCallRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCallSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCallUntypedRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCallUntypedSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCeilRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCmpERec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCmpNeRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCmpSgeRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCmpSgtRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCmpSleRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCmpSltRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCmpUgeRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCmpUgtRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCmpUleRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILCmpUltRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILConstDataRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILConstPtrRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILConstRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILDivsDpRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILDivsRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILDivuDpRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILDivuRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILExternPtrRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFabsRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFaddRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFcmpERec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFcmpGeRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFcmpGtRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFcmpLeRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFcmpLtRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFcmpNeRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFcmpORec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFcmpUoRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFdivRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFloatConstRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFloatConvRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFloatToIntRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFloorRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFmulRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFnegRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILForceVerRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILForceVerSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFreeVarSlotRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFreeVarSlotSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFsqrtRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFsubRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILFtruncRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILGotoRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILIfRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILImportRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILIntToFloatRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILIntrinsicRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILIntrinsicSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILJumpRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILJumpToRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILLoadRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILLoadSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILLoadStructRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILLoadStructSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILLowPartRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILLslRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILLsrRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILMemPhiRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILMemoryIntrinsicOutputSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILMemoryIntrinsicSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILModsDpRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILModsRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILModuDpRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILModuRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILMulRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILMulsDpRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILMuluDpRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILMuluRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILNegRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILNopRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILNoretRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILNotRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILOrRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILRetHintRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILRetRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILRlcRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILRolRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILRorRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILRoundToIntRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILRrcRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSSAInstruction
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSbbRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSeparateParamListRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSetVarAliasedFieldRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSetVarAliasedRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSetVarFieldRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSetVarRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSetVarSplitRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSetVarSplitSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSetVarSsaFieldRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSetVarSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSharedParamSlotRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILStoreRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILStoreSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILStoreStructRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILStoreStructSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSubRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSxRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSyscallRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSyscallSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSyscallUntypedRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILSyscallUntypedSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILTailcallRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILTailcallSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILTailcallUntypedRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILTailcallUntypedSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILTestBitRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILTrapRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILUndefRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILUnimplMemRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILUnimplRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILVarAliasedFieldRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILVarAliasedRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILVarFieldRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILVarPhiRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILVarRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILVarSplitRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILVarSplitSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILVarSsaFieldRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILVarSsaRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILXorRec
-instance GHC.Classes.Ord Binja.Types.MediumLevelILZxRec
-instance GHC.Classes.Ord Binja.Types.Memory
-instance GHC.Classes.Ord Binja.Types.RegisterStack
-instance GHC.Classes.Ord Binja.Types.Return
-instance GHC.Classes.Ord Binja.Types.SetVar
-instance GHC.Classes.Ord Binja.Types.Store
-instance GHC.Classes.Ord Binja.Types.Symbol
-instance GHC.Classes.Ord Binja.Types.SymbolBinding
-instance GHC.Classes.Ord Binja.Types.SymbolType
-instance GHC.Classes.Ord Binja.Types.Syscall
-instance GHC.Classes.Ord Binja.Types.Tailcall
-instance GHC.Classes.Ord Binja.Types.Terminal
-instance GHC.Classes.Ord Binja.Types.VariableInstruction
-instance GHC.Classes.Ord Binja.Types.X86Intrinsic
-instance GHC.Internal.Show.Show Binja.Types.AnalysisContext
-instance GHC.Internal.Show.Show Binja.Types.Architecture
-instance GHC.Internal.Show.Show Binja.Types.Arithmetic
-instance GHC.Internal.Show.Show Binja.Types.Arm64Intrinsic
-instance GHC.Internal.Show.Show Binja.Types.ArmNeonIntrinsic
-instance GHC.Internal.Show.Show Binja.Types.BNBasicBlockEdge
-instance GHC.Internal.Show.Show Binja.Types.BNBranchType
-instance GHC.Internal.Show.Show Binja.Types.BNLowLevelILInstruction
-instance GHC.Internal.Show.Show Binja.Types.BNLowLevelILOperation
-instance GHC.Internal.Show.Show Binja.Types.BNMediumLevelILInstruction
-instance GHC.Internal.Show.Show Binja.Types.BNMediumLevelILOperation
-instance GHC.Internal.Show.Show Binja.Types.BNParameterVariablesWithConfidence
-instance GHC.Internal.Show.Show Binja.Types.BNPossibleValueSet
-instance GHC.Internal.Show.Show Binja.Types.BNReferenceSource
-instance GHC.Internal.Show.Show Binja.Types.BNRegisterValueType
-instance GHC.Internal.Show.Show Binja.Types.BNSSAVariable
-instance GHC.Internal.Show.Show Binja.Types.BNStringRef
-instance GHC.Internal.Show.Show Binja.Types.BNStringType
-instance GHC.Internal.Show.Show Binja.Types.BNVariable
-instance GHC.Internal.Show.Show Binja.Types.BNVariableSourceType
-instance GHC.Internal.Show.Show Binja.Types.BasicBlockEdge
-instance GHC.Internal.Show.Show Binja.Types.BasicBlockMlilSSA
-instance GHC.Internal.Show.Show Binja.Types.CFGContext
-instance GHC.Internal.Show.Show Binja.Types.Carry
-instance GHC.Internal.Show.Show Binja.Types.Comparison
-instance GHC.Internal.Show.Show Binja.Types.Constant
-instance GHC.Internal.Show.Show Binja.Types.ControlFlow
-instance GHC.Internal.Show.Show Binja.Types.CoreMediumLevelILInstruction
-instance GHC.Internal.Show.Show Binja.Types.Function
-instance GHC.Internal.Show.Show Binja.Types.FunctionContext
-instance GHC.Internal.Show.Show Binja.Types.FunctionList
-instance GHC.Internal.Show.Show Binja.Types.ILIntrinsic
-instance GHC.Internal.Show.Show Binja.Types.Intrinsic
-instance GHC.Internal.Show.Show Binja.Types.IntrinsicInstruction
-instance GHC.Internal.Show.Show Binja.Types.Load
-instance GHC.Internal.Show.Show Binja.Types.Localcall
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILAdcRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILAddOverflowRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILAddRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILAddressOfFieldRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILAddressOfRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILAndRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILAsrRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILAssertRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILAssertSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILBoolToIntRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILBpRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCallOutputRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCallOutputSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCallParamRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCallParamSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCallRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCallSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCallUntypedRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCallUntypedSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCeilRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCmpERec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCmpNeRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCmpSgeRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCmpSgtRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCmpSleRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCmpSltRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCmpUgeRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCmpUgtRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCmpUleRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILCmpUltRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILConstDataRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILConstPtrRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILConstRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILDivsDpRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILDivsRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILDivuDpRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILDivuRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILExternPtrRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFabsRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFaddRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFcmpERec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFcmpGeRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFcmpGtRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFcmpLeRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFcmpLtRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFcmpNeRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFcmpORec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFcmpUoRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFdivRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFloatConstRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFloatConvRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFloatToIntRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFloorRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFmulRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFnegRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILForceVerRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILForceVerSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFreeVarSlotRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFreeVarSlotSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFsqrtRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFsubRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILFtruncRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILGotoRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILIfRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILImportRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILIntToFloatRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILIntrinsicRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILIntrinsicSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILJumpRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILJumpToRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILLoadRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILLoadSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILLoadStructRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILLoadStructSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILLowPartRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILLslRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILLsrRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILMemPhiRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILMemoryIntrinsicOutputSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILMemoryIntrinsicSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILModsDpRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILModsRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILModuDpRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILModuRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILMulRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILMulsDpRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILMuluDpRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILMuluRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILNegRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILNopRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILNoretRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILNotRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILOrRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILRetHintRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILRetRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILRlcRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILRolRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILRorRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILRoundToIntRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILRrcRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSSAInstruction
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSbbRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSeparateParamListRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSetVarAliasedFieldRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSetVarAliasedRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSetVarFieldRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSetVarRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSetVarSplitRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSetVarSplitSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSetVarSsaFieldRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSetVarSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSharedParamSlotRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILStoreRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILStoreSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILStoreStructRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILStoreStructSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSubRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSxRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSyscallRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSyscallSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSyscallUntypedRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILSyscallUntypedSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILTailcallRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILTailcallSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILTailcallUntypedRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILTailcallUntypedSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILTestBitRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILTrapRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILUndefRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILUnimplMemRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILUnimplRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILVarAliasedFieldRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILVarAliasedRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILVarFieldRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILVarPhiRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILVarRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILVarSplitRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILVarSplitSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILVarSsaFieldRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILVarSsaRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILXorRec
-instance GHC.Internal.Show.Show Binja.Types.MediumLevelILZxRec
-instance GHC.Internal.Show.Show Binja.Types.Memory
-instance GHC.Internal.Show.Show Binja.Types.ParameterVars
-instance GHC.Internal.Show.Show Binja.Types.RegisterStack
-instance GHC.Internal.Show.Show Binja.Types.Return
-instance GHC.Internal.Show.Show Binja.Types.SSAVariableContext
-instance GHC.Internal.Show.Show Binja.Types.SetVar
-instance GHC.Internal.Show.Show Binja.Types.Store
-instance GHC.Internal.Show.Show Binja.Types.Symbol
-instance GHC.Internal.Show.Show Binja.Types.SymbolBinding
-instance GHC.Internal.Show.Show Binja.Types.SymbolList
-instance GHC.Internal.Show.Show Binja.Types.SymbolType
-instance GHC.Internal.Show.Show Binja.Types.Syscall
-instance GHC.Internal.Show.Show Binja.Types.Tailcall
-instance GHC.Internal.Show.Show Binja.Types.Terminal
-instance GHC.Internal.Show.Show Binja.Types.VariableInstruction
-instance GHC.Internal.Show.Show Binja.Types.X86Intrinsic
-instance GHC.Internal.Foreign.Storable.Storable Binja.Types.BNBasicBlockEdge
-instance GHC.Internal.Foreign.Storable.Storable Binja.Types.BNLowLevelILInstruction
-instance GHC.Internal.Foreign.Storable.Storable Binja.Types.BNMediumLevelILInstruction
-instance GHC.Internal.Foreign.Storable.Storable Binja.Types.BNParameterVariablesWithConfidence
-instance GHC.Internal.Foreign.Storable.Storable Binja.Types.BNPossibleValueSet
-instance GHC.Internal.Foreign.Storable.Storable Binja.Types.BNReferenceSource
-instance GHC.Internal.Foreign.Storable.Storable Binja.Types.BNStringRef
-instance GHC.Internal.Foreign.Storable.Storable Binja.Types.BNVariable
+instance GHC.Internal.Enum.Enum Binja.Types.Core.BNBranchType
+instance GHC.Internal.Enum.Enum Binja.Types.Core.BNLowLevelILOperation
+instance GHC.Internal.Enum.Enum Binja.Types.Core.BNMediumLevelILOperation
+instance GHC.Internal.Enum.Enum Binja.Types.Core.BNRegisterValueType
+instance GHC.Internal.Enum.Enum Binja.Types.Core.BNSectionSemantics
+instance GHC.Internal.Enum.Enum Binja.Types.Core.BNStringType
+instance GHC.Internal.Enum.Enum Binja.Types.Core.BNTypeClass
+instance GHC.Internal.Enum.Enum Binja.Types.Core.BNVariableSourceType
+instance GHC.Internal.Enum.Enum Binja.Types.Core.SymbolBinding
+instance GHC.Internal.Enum.Enum Binja.Types.Core.SymbolType
+instance GHC.Classes.Eq Binja.Types.Core.Arithmetic
+instance GHC.Classes.Eq Binja.Types.Core.BNBasicBlockEdge
+instance GHC.Classes.Eq Binja.Types.Core.BNBranchType
+instance GHC.Classes.Eq Binja.Types.Core.BNLowLevelILInstruction
+instance GHC.Classes.Eq Binja.Types.Core.BNLowLevelILOperation
+instance GHC.Classes.Eq Binja.Types.Core.BNMediumLevelILInstruction
+instance GHC.Classes.Eq Binja.Types.Core.BNMediumLevelILOperation
+instance GHC.Classes.Eq Binja.Types.Core.BNPossibleValueSet
+instance GHC.Classes.Eq Binja.Types.Core.BNReferenceSource
+instance GHC.Classes.Eq Binja.Types.Core.BNRegisterValueType
+instance GHC.Classes.Eq Binja.Types.Core.BNSSAVariable
+instance GHC.Classes.Eq Binja.Types.Core.BNSectionSemantics
+instance GHC.Classes.Eq Binja.Types.Core.BNStringRef
+instance GHC.Classes.Eq Binja.Types.Core.BNStringType
+instance GHC.Classes.Eq Binja.Types.Core.BNTypeClass
+instance GHC.Classes.Eq Binja.Types.Core.BNVariable
+instance GHC.Classes.Eq Binja.Types.Core.BNVariableSourceType
+instance GHC.Classes.Eq Binja.Types.Core.BasicBlockEdge
+instance GHC.Classes.Eq Binja.Types.Core.BasicBlockMlilSSA
+instance GHC.Classes.Eq Binja.Types.Core.Carry
+instance GHC.Classes.Eq Binja.Types.Core.Comparison
+instance GHC.Classes.Eq Binja.Types.Core.Constant
+instance GHC.Classes.Eq Binja.Types.Core.ControlFlow
+instance GHC.Classes.Eq Binja.Types.Core.CoreMediumLevelILInstruction
+instance GHC.Classes.Eq Binja.Types.Core.Function
+instance GHC.Classes.Eq Binja.Types.Core.FunctionList
+instance GHC.Classes.Eq Binja.Types.Core.ILIntrinsic
+instance GHC.Classes.Eq Binja.Types.Core.IntrinsicInstruction
+instance GHC.Classes.Eq Binja.Types.Core.Load
+instance GHC.Classes.Eq Binja.Types.Core.Localcall
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILAbsRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILAdcRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILAddOverflowRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILAddRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILAddressOfFieldRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILAddressOfRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILAndRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILAsrRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILAssertRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILAssertSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILBlockToExpandRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILBoolToIntRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILBpRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILBswapRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCallOutputSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCallParamRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCallParamSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCallRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCallSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCallUntypedRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCallUntypedSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCeilRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILClsRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILClzRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCmpERec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCmpNeRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCmpSgeRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCmpSgtRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCmpSleRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCmpSltRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCmpUgeRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCmpUgtRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCmpUleRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCmpUltRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILConstDataRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILConstPtrRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILConstRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILCtzRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILDivsDpRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILDivsRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILDivuDpRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILDivuRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILExternPtrRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFabsRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFaddRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFcmpERec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFcmpGeRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFcmpGtRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFcmpLeRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFcmpLtRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFcmpNeRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFcmpORec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFcmpUoRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFdivRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFloatConstRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFloatConvRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFloatToIntRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFloorRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFmulRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFnegRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILForceVerRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILForceVerSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFreeVarSlotRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFreeVarSlotSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFsqrtRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFsubRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILFtruncRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILGotoRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILIfRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILImportRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILIntToFloatRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILIntrinsicRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILIntrinsicSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILJumpRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILJumpToRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILLoadRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILLoadSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILLoadStructRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILLoadStructSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILLowPartRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILLslRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILLsrRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILMaxsRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILMaxuRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILMemPhiRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILMemoryIntrinsicOutputSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILMemoryIntrinsicSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILMinsRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILMinuRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILModsDpRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILModsRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILModuDpRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILModuRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILMulRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILMulsDpRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILMuluDpRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILMuluRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILNegRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILNopRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILNoretRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILNotRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILOrRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILPassByRefRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILPopcntRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILRbitRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILRetHintRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILRetRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILReturnByRefRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILRlcRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILRolRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILRorRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILRoundToIntRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILRrcRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSSAInstruction
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSbbRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSeparateParamListRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSetVarAliasedFieldRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSetVarAliasedRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSetVarFieldRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSetVarRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSetVarSplitRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSetVarSplitSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSetVarSsaFieldRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSetVarSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSharedParamSlotRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILStoreOutputRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILStoreRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILStoreSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILStoreStructRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILStoreStructSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSubRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSxRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSyscallRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSyscallSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSyscallUntypedRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILSyscallUntypedSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILTailcallRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILTailcallSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILTailcallUntypedRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILTailcallUntypedSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILTestBitRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILTrapRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILUndefRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILUnimplMemRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILUnimplRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarAliasedFieldRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarAliasedRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarFieldRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarOutputAliasedFieldRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarOutputAliasedRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarOutputFieldRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarOutputRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarOutputSsaFieldRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarOutputSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarPhiRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarSplitRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarSplitSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarSsaFieldRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILVarSsaRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILXorRec
+instance GHC.Classes.Eq Binja.Types.Core.MediumLevelILZxRec
+instance GHC.Classes.Eq Binja.Types.Core.Memory
+instance GHC.Classes.Eq Binja.Types.Core.RegisterStack
+instance GHC.Classes.Eq Binja.Types.Core.Return
+instance GHC.Classes.Eq Binja.Types.Core.SetVar
+instance GHC.Classes.Eq Binja.Types.Core.Store
+instance GHC.Classes.Eq Binja.Types.Core.Symbol
+instance GHC.Classes.Eq Binja.Types.Core.SymbolBinding
+instance GHC.Classes.Eq Binja.Types.Core.SymbolList
+instance GHC.Classes.Eq Binja.Types.Core.SymbolType
+instance GHC.Classes.Eq Binja.Types.Core.Syscall
+instance GHC.Classes.Eq Binja.Types.Core.Tailcall
+instance GHC.Classes.Eq Binja.Types.Core.Terminal
+instance GHC.Classes.Eq Binja.Types.Core.VariableInstruction
+instance GHC.Classes.Ord Binja.Types.Core.Arithmetic
+instance GHC.Classes.Ord Binja.Types.Core.BNBasicBlockEdge
+instance GHC.Classes.Ord Binja.Types.Core.BNBranchType
+instance GHC.Classes.Ord Binja.Types.Core.BNMediumLevelILInstruction
+instance GHC.Classes.Ord Binja.Types.Core.BNMediumLevelILOperation
+instance GHC.Classes.Ord Binja.Types.Core.BNPossibleValueSet
+instance GHC.Classes.Ord Binja.Types.Core.BNRegisterValueType
+instance GHC.Classes.Ord Binja.Types.Core.BNSSAVariable
+instance GHC.Classes.Ord Binja.Types.Core.BNVariable
+instance GHC.Classes.Ord Binja.Types.Core.BNVariableSourceType
+instance GHC.Classes.Ord Binja.Types.Core.BasicBlockEdge
+instance GHC.Classes.Ord Binja.Types.Core.BasicBlockMlilSSA
+instance GHC.Classes.Ord Binja.Types.Core.Carry
+instance GHC.Classes.Ord Binja.Types.Core.Comparison
+instance GHC.Classes.Ord Binja.Types.Core.Constant
+instance GHC.Classes.Ord Binja.Types.Core.ControlFlow
+instance GHC.Classes.Ord Binja.Types.Core.CoreMediumLevelILInstruction
+instance GHC.Classes.Ord Binja.Types.Core.ILIntrinsic
+instance GHC.Classes.Ord Binja.Types.Core.IntrinsicInstruction
+instance GHC.Classes.Ord Binja.Types.Core.Load
+instance GHC.Classes.Ord Binja.Types.Core.Localcall
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILAbsRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILAdcRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILAddOverflowRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILAddRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILAddressOfFieldRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILAddressOfRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILAndRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILAsrRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILAssertRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILAssertSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILBlockToExpandRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILBoolToIntRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILBpRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILBswapRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCallOutputSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCallParamRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCallParamSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCallRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCallSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCallUntypedRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCallUntypedSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCeilRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILClsRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILClzRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCmpERec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCmpNeRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCmpSgeRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCmpSgtRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCmpSleRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCmpSltRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCmpUgeRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCmpUgtRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCmpUleRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCmpUltRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILConstDataRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILConstPtrRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILConstRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILCtzRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILDivsDpRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILDivsRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILDivuDpRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILDivuRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILExternPtrRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFabsRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFaddRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFcmpERec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFcmpGeRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFcmpGtRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFcmpLeRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFcmpLtRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFcmpNeRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFcmpORec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFcmpUoRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFdivRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFloatConstRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFloatConvRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFloatToIntRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFloorRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFmulRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFnegRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILForceVerRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILForceVerSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFreeVarSlotRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFreeVarSlotSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFsqrtRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFsubRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILFtruncRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILGotoRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILIfRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILImportRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILIntToFloatRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILIntrinsicRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILIntrinsicSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILJumpRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILJumpToRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILLoadRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILLoadSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILLoadStructRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILLoadStructSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILLowPartRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILLslRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILLsrRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILMaxsRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILMaxuRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILMemPhiRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILMemoryIntrinsicOutputSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILMemoryIntrinsicSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILMinsRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILMinuRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILModsDpRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILModsRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILModuDpRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILModuRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILMulRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILMulsDpRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILMuluDpRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILMuluRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILNegRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILNopRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILNoretRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILNotRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILOrRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILPassByRefRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILPopcntRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILRbitRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILRetHintRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILRetRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILReturnByRefRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILRlcRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILRolRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILRorRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILRoundToIntRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILRrcRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSSAInstruction
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSbbRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSeparateParamListRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSetVarAliasedFieldRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSetVarAliasedRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSetVarFieldRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSetVarRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSetVarSplitRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSetVarSplitSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSetVarSsaFieldRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSetVarSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSharedParamSlotRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILStoreOutputRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILStoreRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILStoreSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILStoreStructRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILStoreStructSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSubRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSxRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSyscallRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSyscallSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSyscallUntypedRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILSyscallUntypedSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILTailcallRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILTailcallSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILTailcallUntypedRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILTailcallUntypedSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILTestBitRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILTrapRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILUndefRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILUnimplMemRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILUnimplRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarAliasedFieldRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarAliasedRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarFieldRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarOutputAliasedFieldRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarOutputAliasedRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarOutputFieldRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarOutputRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarOutputSsaFieldRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarOutputSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarPhiRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarSplitRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarSplitSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarSsaFieldRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILVarSsaRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILXorRec
+instance GHC.Classes.Ord Binja.Types.Core.MediumLevelILZxRec
+instance GHC.Classes.Ord Binja.Types.Core.Memory
+instance GHC.Classes.Ord Binja.Types.Core.RegisterStack
+instance GHC.Classes.Ord Binja.Types.Core.Return
+instance GHC.Classes.Ord Binja.Types.Core.SetVar
+instance GHC.Classes.Ord Binja.Types.Core.Store
+instance GHC.Classes.Ord Binja.Types.Core.Symbol
+instance GHC.Classes.Ord Binja.Types.Core.SymbolBinding
+instance GHC.Classes.Ord Binja.Types.Core.SymbolType
+instance GHC.Classes.Ord Binja.Types.Core.Syscall
+instance GHC.Classes.Ord Binja.Types.Core.Tailcall
+instance GHC.Classes.Ord Binja.Types.Core.Terminal
+instance GHC.Classes.Ord Binja.Types.Core.VariableInstruction
+instance GHC.Internal.Show.Show Binja.Types.Core.Arithmetic
+instance GHC.Internal.Show.Show Binja.Types.Core.BNBasicBlockEdge
+instance GHC.Internal.Show.Show Binja.Types.Core.BNBoolWithConfidence
+instance GHC.Internal.Show.Show Binja.Types.Core.BNBranchType
+instance GHC.Internal.Show.Show Binja.Types.Core.BNLowLevelILInstruction
+instance GHC.Internal.Show.Show Binja.Types.Core.BNLowLevelILOperation
+instance GHC.Internal.Show.Show Binja.Types.Core.BNMediumLevelILInstruction
+instance GHC.Internal.Show.Show Binja.Types.Core.BNMediumLevelILOperation
+instance GHC.Internal.Show.Show Binja.Types.Core.BNParameterVariablesWithConfidence
+instance GHC.Internal.Show.Show Binja.Types.Core.BNPossibleValueSet
+instance GHC.Internal.Show.Show Binja.Types.Core.BNReferenceSource
+instance GHC.Internal.Show.Show Binja.Types.Core.BNRegisterValueType
+instance GHC.Internal.Show.Show Binja.Types.Core.BNSSAVariable
+instance GHC.Internal.Show.Show Binja.Types.Core.BNSectionSemantics
+instance GHC.Internal.Show.Show Binja.Types.Core.BNStringRef
+instance GHC.Internal.Show.Show Binja.Types.Core.BNStringType
+instance GHC.Internal.Show.Show Binja.Types.Core.BNTypeClass
+instance GHC.Internal.Show.Show Binja.Types.Core.BNTypeWithConfidence
+instance GHC.Internal.Show.Show Binja.Types.Core.BNVariable
+instance GHC.Internal.Show.Show Binja.Types.Core.BNVariableSourceType
+instance GHC.Internal.Show.Show Binja.Types.Core.BasicBlockEdge
+instance GHC.Internal.Show.Show Binja.Types.Core.BasicBlockMlilSSA
+instance GHC.Internal.Show.Show Binja.Types.Core.CFGContext
+instance GHC.Internal.Show.Show Binja.Types.Core.Carry
+instance GHC.Internal.Show.Show Binja.Types.Core.Comparison
+instance GHC.Internal.Show.Show Binja.Types.Core.Constant
+instance GHC.Internal.Show.Show Binja.Types.Core.ControlFlow
+instance GHC.Internal.Show.Show Binja.Types.Core.CoreMediumLevelILInstruction
+instance GHC.Internal.Show.Show Binja.Types.Core.DataVariable
+instance GHC.Internal.Show.Show Binja.Types.Core.Function
+instance GHC.Internal.Show.Show Binja.Types.Core.FunctionContext
+instance GHC.Internal.Show.Show Binja.Types.Core.FunctionList
+instance GHC.Internal.Show.Show Binja.Types.Core.ILIntrinsic
+instance GHC.Internal.Show.Show Binja.Types.Core.IntrinsicInstruction
+instance GHC.Internal.Show.Show Binja.Types.Core.Load
+instance GHC.Internal.Show.Show Binja.Types.Core.Localcall
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILAbsRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILAdcRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILAddOverflowRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILAddRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILAddressOfFieldRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILAddressOfRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILAndRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILAsrRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILAssertRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILAssertSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILBlockToExpandRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILBoolToIntRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILBpRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILBswapRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCallOutputSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCallParamRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCallParamSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCallRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCallSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCallUntypedRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCallUntypedSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCeilRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILClsRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILClzRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCmpERec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCmpNeRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCmpSgeRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCmpSgtRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCmpSleRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCmpSltRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCmpUgeRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCmpUgtRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCmpUleRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCmpUltRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILConstDataRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILConstPtrRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILConstRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILCtzRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILDivsDpRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILDivsRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILDivuDpRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILDivuRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILExternPtrRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFabsRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFaddRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFcmpERec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFcmpGeRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFcmpGtRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFcmpLeRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFcmpLtRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFcmpNeRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFcmpORec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFcmpUoRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFdivRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFloatConstRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFloatConvRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFloatToIntRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFloorRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFmulRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFnegRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILForceVerRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILForceVerSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFreeVarSlotRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFreeVarSlotSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFsqrtRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFsubRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILFtruncRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILGotoRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILIfRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILImportRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILIntToFloatRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILIntrinsicRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILIntrinsicSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILJumpRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILJumpToRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILLoadRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILLoadSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILLoadStructRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILLoadStructSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILLowPartRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILLslRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILLsrRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILMaxsRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILMaxuRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILMemPhiRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILMemoryIntrinsicOutputSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILMemoryIntrinsicSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILMinsRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILMinuRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILModsDpRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILModsRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILModuDpRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILModuRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILMulRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILMulsDpRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILMuluDpRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILMuluRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILNegRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILNopRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILNoretRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILNotRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILOrRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILPassByRefRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILPopcntRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILRbitRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILRetHintRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILRetRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILReturnByRefRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILRlcRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILRolRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILRorRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILRoundToIntRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILRrcRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSSAInstruction
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSbbRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSeparateParamListRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSetVarAliasedFieldRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSetVarAliasedRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSetVarFieldRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSetVarRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSetVarSplitRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSetVarSplitSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSetVarSsaFieldRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSetVarSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSharedParamSlotRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILStoreOutputRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILStoreRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILStoreSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILStoreStructRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILStoreStructSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSubRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSxRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSyscallRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSyscallSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSyscallUntypedRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILSyscallUntypedSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILTailcallRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILTailcallSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILTailcallUntypedRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILTailcallUntypedSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILTestBitRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILTrapRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILUndefRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILUnimplMemRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILUnimplRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarAliasedFieldRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarAliasedRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarFieldRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarOutputAliasedFieldRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarOutputAliasedRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarOutputFieldRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarOutputRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarOutputSsaFieldRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarOutputSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarPhiRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarSplitRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarSplitSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarSsaFieldRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILVarSsaRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILXorRec
+instance GHC.Internal.Show.Show Binja.Types.Core.MediumLevelILZxRec
+instance GHC.Internal.Show.Show Binja.Types.Core.Memory
+instance GHC.Internal.Show.Show Binja.Types.Core.ParameterVars
+instance GHC.Internal.Show.Show Binja.Types.Core.RegisterStack
+instance GHC.Internal.Show.Show Binja.Types.Core.Return
+instance GHC.Internal.Show.Show Binja.Types.Core.SSAVariableContext
+instance GHC.Internal.Show.Show Binja.Types.Core.Section
+instance GHC.Internal.Show.Show Binja.Types.Core.Segment
+instance GHC.Internal.Show.Show Binja.Types.Core.SetVar
+instance GHC.Internal.Show.Show Binja.Types.Core.Store
+instance GHC.Internal.Show.Show Binja.Types.Core.Symbol
+instance GHC.Internal.Show.Show Binja.Types.Core.SymbolBinding
+instance GHC.Internal.Show.Show Binja.Types.Core.SymbolList
+instance GHC.Internal.Show.Show Binja.Types.Core.SymbolType
+instance GHC.Internal.Show.Show Binja.Types.Core.Syscall
+instance GHC.Internal.Show.Show Binja.Types.Core.Tailcall
+instance GHC.Internal.Show.Show Binja.Types.Core.Terminal
+instance GHC.Internal.Show.Show Binja.Types.Core.VariableInstruction
+instance GHC.Internal.Foreign.Storable.Storable Binja.Types.Core.BNBasicBlockEdge
+instance GHC.Internal.Foreign.Storable.Storable Binja.Types.Core.BNBoolWithConfidence
+instance GHC.Internal.Foreign.Storable.Storable Binja.Types.Core.BNLowLevelILInstruction
+instance GHC.Internal.Foreign.Storable.Storable Binja.Types.Core.BNMediumLevelILInstruction
+instance GHC.Internal.Foreign.Storable.Storable Binja.Types.Core.BNParameterVariablesWithConfidence
+instance GHC.Internal.Foreign.Storable.Storable Binja.Types.Core.BNPossibleValueSet
+instance GHC.Internal.Foreign.Storable.Storable Binja.Types.Core.BNReferenceSource
+instance GHC.Internal.Foreign.Storable.Storable Binja.Types.Core.BNStringRef
+instance GHC.Internal.Foreign.Storable.Storable Binja.Types.Core.BNTypeWithConfidence
+instance GHC.Internal.Foreign.Storable.Storable Binja.Types.Core.BNVariable
+instance GHC.Internal.Foreign.Storable.Storable Binja.Types.Core.DataVariable
 
 module Binja.FFI
 c_BNGetCachedMediumLevelILPossibleValueSetPtr :: Ptr BNPossibleValueSet -> BNMlilSSAFunctionPtr -> CSize -> IO (Ptr BNPossibleValueSet)
@@ -2308,6 +2627,18 @@ c_BNUpdateAnalysisAndWait :: BNBinaryViewPtr -> IO ()
 c_BNAbortAnalysis :: BNBinaryViewPtr -> IO ()
 c_BNGetAnalysisFunctionList :: BNBinaryViewPtr -> Ptr CSize -> IO (Ptr BNFunctionPtr)
 c_BNFreeFunctionList :: Ptr BNFunctionPtr -> CSize -> IO ()
+c_BNGetSegments :: BNBinaryViewPtr -> Ptr CSize -> IO (Ptr BNSegmentPtr)
+c_BNFreeSegmentList :: Ptr BNSegmentPtr -> CSize -> IO ()
+c_BNGetSections :: BNBinaryViewPtr -> Ptr CSize -> IO (Ptr BNSectionPtr)
+c_BNFreeSectionList :: Ptr BNSectionPtr -> CSize -> IO ()
+c_BNSectionGetName :: BNSectionPtr -> IO CString
+c_BNSectionGetStart :: BNSectionPtr -> IO Word64
+c_BNSectionGetEnd :: BNSectionPtr -> IO Word64
+c_BNSectionGetSemantics :: BNSectionPtr -> IO Word8
+c_BNSectionGetAlign :: BNSectionPtr -> IO Word64
+c_BNSegmentGetStart :: BNSegmentPtr -> IO Word64
+c_BNSegmentGetEnd :: BNSegmentPtr -> IO Word64
+c_BNSegmentGetFlags :: BNSegmentPtr -> IO Word32
 c_BNGetSymbols :: BNBinaryViewPtr -> Ptr CSize -> BNNameSpacePtr -> IO (Ptr BNSymbolPtr)
 c_BNFreeSymbolList :: Ptr BNSymbolPtr -> CSize -> IO ()
 c_BNGetAnalysisFunctionsContainingAddress :: BNBinaryViewPtr -> Word64 -> Ptr CSize -> IO (Ptr BNFunctionPtr)
@@ -2377,6 +2708,10 @@ c_BNFreeVariableList :: Ptr BNVariable -> IO ()
 c_BNGetMediumLevelILVariableSSAVersions :: BNMlilSSAFunctionPtr -> Ptr BNVariable -> Ptr CSize -> IO (Ptr CSize)
 c_BNFreeILInstructionList :: Ptr CSize -> IO ()
 c_BNGetArchitectureName :: BNArchPtr -> IO CString
+c_BNGetDataVariables :: BNBinaryViewPtr -> Ptr CSize -> IO (Ptr DataVariable)
+c_BNFreeDataVariables :: Ptr DataVariable -> CSize -> IO ()
+c_BNGetImageBase :: BNBinaryViewPtr -> IO Word64
+c_BNGetEntryPoint :: BNBinaryViewPtr -> IO Word64
 
 module Binja.ReferenceSource
 codeRefs :: BNBinaryViewPtr -> Word64 -> IO [BNReferenceSource]
@@ -2386,6 +2721,19 @@ instance GHC.Internal.Show.Show Binja.ReferenceSource.CodeReferenceList
 module Binja.Utils
 toBool :: CBool -> Bool
 ptrToMaybe :: Ptr a -> Maybe (Ptr a)
+data Colors
+Colors :: (String -> String) -> (String -> String) -> (String -> String) -> (String -> String) -> (String -> String) -> (String -> String) -> (String -> String) -> Colors
+[red] :: Colors -> String -> String
+[green] :: Colors -> String -> String
+[yellow] :: Colors -> String -> String
+[blue] :: Colors -> String -> String
+[cyan] :: Colors -> String -> String
+[magenta] :: Colors -> String -> String
+[orange] :: Colors -> String -> String
+
+-- | Populate Colors with: * identity function * color coded string
+--   dependent on hIsTerminalDevice stdout
+getColors :: IO Colors
 
 module Binja.Symbol
 create :: BNSymbolPtr -> IO Symbol
@@ -2443,8 +2791,11 @@ entryFunction :: BNBinaryViewPtr -> IO (Maybe BNFunctionPtr)
 functionsContaining :: BNBinaryViewPtr -> Word64 -> IO [BNFunctionPtr]
 functionsAt :: BNBinaryViewPtr -> Word64 -> IO [BNFunctionPtr]
 functionsByName :: BNBinaryViewPtr -> String -> IO [BNFunctionPtr]
+segments :: BNBinaryViewPtr -> IO [Segment]
+sections :: BNBinaryViewPtr -> IO [Section]
 symbols :: BNBinaryViewPtr -> IO [Symbol]
 symbolsByName :: BNBinaryViewPtr -> String -> IO [Symbol]
+dataVars :: BNBinaryViewPtr -> IO [DataVariable]
 strings :: BNBinaryViewPtr -> IO [Maybe String]
 read :: BNBinaryViewPtr -> Word64 -> CSize -> IO (Maybe ByteString)
 symbolAt :: BNBinaryViewPtr -> Word64 -> IO (Maybe Symbol)
@@ -2495,6 +2846,10 @@ extractCallDestSymbol :: BNBinaryViewPtr -> MediumLevelILSSAInstruction -> IO (M
 -- | All instructions (children included) in a binary view.
 instructions :: BNBinaryViewPtr -> IO [MediumLevelILSSAInstruction]
 
+-- | Derive a higher level mlil ssa-variant instruction given a mlil ssa
+--   function handle and mlil ssa expression index.
+create :: BNMlilSSAFunctionPtr -> CSize -> IO MediumLevelILSSAInstruction
+
 -- | All instructions (children included) in a specific function.
 instructionsFromFunc :: BNMlilSSAFunctionPtr -> IO [MediumLevelILSSAInstruction]
 
@@ -2511,8 +2866,8 @@ fromMlilFunction :: BNMlilFunctionPtr -> IO [BNBasicBlockPtr]
 fromMlilSSAFunction :: BNMlilSSAFunctionPtr -> IO [BNBasicBlockPtr]
 outgoingEdges :: BNBasicBlockPtr -> IO [BNBasicBlockEdge]
 incomingEdges :: BNBasicBlockPtr -> IO [BNBasicBlockEdge]
-fromBlockPtr :: BNBasicBlockPtr -> IO BasicBlockMlilSSA
-fromBlockEdge :: BNBasicBlockEdge -> IO BasicBlockEdge
+fromBlockPtr :: BNMlilSSAFunctionPtr -> BNBasicBlockPtr -> IO BasicBlockMlilSSA
+fromBlockEdge :: BNMlilSSAFunctionPtr -> BNBasicBlockEdge -> IO BasicBlockEdge
 
 module Binja.ControlFlowGraph
 create :: BNMlilSSAFunctionPtr -> IO CFGContext
@@ -2594,6 +2949,10 @@ callers :: AnalysisContext -> FunctionContext -> Set Symbol
 --   cocktail of patterns will be supported. Further reading: <a>A Cocktail
 --   Approach to Practical Call Graph Construction</a>
 extractCallDestSymbol :: AnalysisContext -> MediumLevelILSSAInstruction -> Maybe Symbol
+
+-- | Returns a string summary of values contained in an analysis context
+--   including basic block count, function count, etc.
+summary :: AnalysisContext -> IO String
 
 -- | Must be called once finished with an AnalysisContext to avoid handle
 --   leak. Suggested pattern: <a>Bracket Pattern</a>

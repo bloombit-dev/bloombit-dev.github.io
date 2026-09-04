@@ -21,25 +21,25 @@
 </span><span id="line-21"></span><span class="hs-keyword">where</span><span>
 </span><span id="line-22"></span><span>
 </span><span id="line-23"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Binja.AnalysisContext.html"><span class="hs-identifier">Binja.AnalysisContext</span></a></span><span>
-</span><span id="line-24"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Binja.Types.html"><span class="hs-identifier">Binja.Types</span></a></span><span>
+</span><span id="line-24"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Binja.Types.Core.html"><span class="hs-identifier">Binja.Types.Core</span></a></span><span>
 </span><span id="line-25"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Map</span></span><span>
 </span><span id="line-26"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Set</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Set</span></span><span>
 </span><span id="line-27"></span><span>
-</span><span id="line-28"></span><span class="hs-keyword">type</span><span> </span><span id="Vertex"><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-var">Vertex</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Binja.Types.html#Symbol"><span class="hs-identifier hs-type">Binja.Types.Symbol</span></a></span><span>
+</span><span id="line-28"></span><span class="hs-keyword">type</span><span> </span><span id="Vertex"><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-var">Vertex</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Binja.Types.Core.html#Symbol"><span class="hs-identifier hs-type">Binja.Types.Core.Symbol</span></a></span><span>
 </span><span id="line-29"></span><span>
 </span><span id="line-30"></span><span class="hs-keyword">type</span><span> </span><span id="Graph"><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-var">Graph</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map.Map</span></span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set.Set</span></span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-31"></span><span>
 </span><span id="line-32"></span><span class="hs-comment">-- | Derive a callgraph from an AnalysisContext.</span><span>
 </span><span id="line-33"></span><span class="hs-comment">-- __Note__: Not all runtime evaluated call destinations will be recovered</span><span>
 </span><span id="line-34"></span><span class="hs-comment">-- via Binja.AnalysisContext.callers.</span><span>
-</span><span id="line-35"></span><span class="annot"><a href="Callgraph.html#create"><span class="hs-identifier hs-type">create</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Binja.Types.html#AnalysisContext"><span class="hs-identifier hs-type">AnalysisContext</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span>
+</span><span id="line-35"></span><span class="annot"><a href="Callgraph.html#create"><span class="hs-identifier hs-type">create</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Binja.Types.Core.html#AnalysisContext"><span class="hs-identifier hs-type">AnalysisContext</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span>
 </span><span id="line-36"></span><span id="create"><span class="annot"><span class="annottext">create :: AnalysisContext -&gt; Graph
-</span><a href="Callgraph.html#create"><span class="hs-identifier hs-var hs-var">create</span></a></span></span><span> </span><span id="local-6989586621679457820"><span class="annot"><span class="annottext">AnalysisContext
-</span><a href="#local-6989586621679457820"><span class="hs-identifier hs-var">context</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="Callgraph.html#create"><span class="hs-identifier hs-var hs-var">create</span></a></span></span><span> </span><span id="local-6989586621679489636"><span class="annot"><span class="annottext">AnalysisContext
+</span><a href="#local-6989586621679489636"><span class="hs-identifier hs-var">context</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-37"></span><span>  </span><span class="annot"><span class="annottext">Graph -&gt; Graph -&gt; Graph
 forall k a. Ord k =&gt; Map k a -&gt; Map k a -&gt; Map k a
 </span><span class="hs-identifier hs-var">Map.union</span></span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457822"><span class="hs-identifier hs-var">initialGraph</span></a></span><span> </span><span class="annot"><span class="annottext">(Graph -&gt; Graph) -&gt; Graph -&gt; Graph
+</span><a href="#local-6989586621679489638"><span class="hs-identifier hs-var">initialGraph</span></a></span><span> </span><span class="annot"><span class="annottext">(Graph -&gt; Graph) -&gt; Graph -&gt; Graph
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[(Vertex, Set Vertex)] -&gt; Graph
 forall k a. Ord k =&gt; [(k, a)] -&gt; Map k a
@@ -49,16 +49,16 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(Vertex -&gt; (Vertex, Set Vertex))
 -&gt; [Vertex] -&gt; [(Vertex, Set Vertex)]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
-</span><span class="hs-identifier hs-var">Prelude.map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679457824"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457824"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457824"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Set Vertex
+</span><span class="hs-identifier hs-var">Prelude.map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679489640"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489640"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489640"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Set Vertex
 forall a. Set a
 </span><span class="hs-identifier hs-var">Set.empty</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Vertex]
-</span><a href="#local-6989586621679457826"><span class="hs-identifier hs-var">allChildren</span></a></span><span>
+</span><a href="#local-6989586621679489642"><span class="hs-identifier hs-var">allChildren</span></a></span><span>
 </span><span id="line-38"></span><span>  </span><span class="hs-keyword">where</span><span>
-</span><span id="line-39"></span><span>    </span><span class="annot"><a href="#local-6989586621679457822"><span class="hs-identifier hs-type">initialGraph</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span>
-</span><span id="line-40"></span><span>    </span><span id="local-6989586621679457822"><span class="annot"><span class="annottext">initialGraph :: Graph
-</span><a href="#local-6989586621679457822"><span class="hs-identifier hs-var hs-var">initialGraph</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-39"></span><span>    </span><span class="annot"><a href="#local-6989586621679489638"><span class="hs-identifier hs-type">initialGraph</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span id="local-6989586621679489638"><span class="annot"><span class="annottext">initialGraph :: Graph
+</span><a href="#local-6989586621679489638"><span class="hs-identifier hs-var hs-var">initialGraph</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-41"></span><span>      </span><span class="annot"><span class="annottext">[(Vertex, Set Vertex)] -&gt; Graph
 forall k a. Ord k =&gt; [(k, a)] -&gt; Map k a
 </span><span class="hs-identifier hs-var">Map.fromList</span></span><span> </span><span class="annot"><span class="annottext">([(Vertex, Set Vertex)] -&gt; Graph)
@@ -68,22 +68,22 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span id="line-42"></span><span>        </span><span class="annot"><span class="annottext">(FunctionContext -&gt; (Vertex, Set Vertex))
 -&gt; [FunctionContext] -&gt; [(Vertex, Set Vertex)]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
-</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679457827"><span class="annot"><span class="annottext">FunctionContext
-</span><a href="#local-6989586621679457827"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FunctionContext -&gt; Vertex
-</span><a href="Binja.Types.html#symbol"><span class="hs-identifier hs-var">symbol</span></a></span><span> </span><span class="annot"><span class="annottext">FunctionContext
-</span><a href="#local-6989586621679457827"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AnalysisContext -&gt; FunctionContext -&gt; Set Vertex
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679489643"><span class="annot"><span class="annottext">FunctionContext
+</span><a href="#local-6989586621679489643"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FunctionContext -&gt; Vertex
+</span><a href="Binja.Types.Core.html#symbol"><span class="hs-identifier hs-var">symbol</span></a></span><span> </span><span class="annot"><span class="annottext">FunctionContext
+</span><a href="#local-6989586621679489643"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">AnalysisContext -&gt; FunctionContext -&gt; Set Vertex
 </span><a href="Binja.AnalysisContext.html#callers"><span class="hs-identifier hs-var">Binja.AnalysisContext.callers</span></a></span><span> </span><span class="annot"><span class="annottext">AnalysisContext
-</span><a href="#local-6989586621679457820"><span class="hs-identifier hs-var">context</span></a></span><span> </span><span class="annot"><span class="annottext">FunctionContext
-</span><a href="#local-6989586621679457827"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([FunctionContext] -&gt; [(Vertex, Set Vertex)])
+</span><a href="#local-6989586621679489636"><span class="hs-identifier hs-var">context</span></a></span><span> </span><span class="annot"><span class="annottext">FunctionContext
+</span><a href="#local-6989586621679489643"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([FunctionContext] -&gt; [(Vertex, Set Vertex)])
 -&gt; [FunctionContext] -&gt; [(Vertex, Set Vertex)]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-43"></span><span>          </span><span class="annot"><span class="annottext">AnalysisContext -&gt; [FunctionContext]
-</span><a href="Binja.Types.html#functions"><span class="hs-identifier hs-var">functions</span></a></span><span> </span><span class="annot"><span class="annottext">AnalysisContext
-</span><a href="#local-6989586621679457820"><span class="hs-identifier hs-var">context</span></a></span><span>
-</span><span id="line-44"></span><span>    </span><span class="annot"><a href="#local-6989586621679457826"><span class="hs-identifier hs-type">allChildren</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">]</span><span>
-</span><span id="line-45"></span><span>    </span><span id="local-6989586621679457826"><span class="annot"><span class="annottext">allChildren :: [Vertex]
-</span><a href="#local-6989586621679457826"><span class="hs-identifier hs-var hs-var">allChildren</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set Vertex -&gt; [Vertex]
+</span><a href="Binja.Types.Core.html#functions"><span class="hs-identifier hs-var">functions</span></a></span><span> </span><span class="annot"><span class="annottext">AnalysisContext
+</span><a href="#local-6989586621679489636"><span class="hs-identifier hs-var">context</span></a></span><span>
+</span><span id="line-44"></span><span>    </span><span class="annot"><a href="#local-6989586621679489642"><span class="hs-identifier hs-type">allChildren</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-45"></span><span>    </span><span id="local-6989586621679489642"><span class="annot"><span class="annottext">allChildren :: [Vertex]
+</span><a href="#local-6989586621679489642"><span class="hs-identifier hs-var hs-var">allChildren</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set Vertex -&gt; [Vertex]
 forall a. Set a -&gt; [a]
 </span><span class="hs-identifier hs-var">Set.toList</span></span><span> </span><span class="annot"><span class="annottext">(Set Vertex -&gt; [Vertex]) -&gt; Set Vertex -&gt; [Vertex]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
@@ -94,7 +94,7 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Graph -&gt; [Set Vertex]
 forall k a. Map k a -&gt; [a]
 </span><span class="hs-identifier hs-var">Map.elems</span></span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457822"><span class="hs-identifier hs-var">initialGraph</span></a></span><span>
+</span><a href="#local-6989586621679489638"><span class="hs-identifier hs-var">initialGraph</span></a></span><span>
 </span><span id="line-46"></span><span>
 </span><span id="line-47"></span><span class="annot"><a href="Callgraph.html#vertices"><span class="hs-identifier hs-type">vertices</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-48"></span><span id="vertices"><span class="annot"><span class="annottext">vertices :: Graph -&gt; [Vertex]
@@ -104,13 +104,13 @@ forall k a. Map k a -&gt; [k]
 </span><span id="line-49"></span><span>
 </span><span id="line-50"></span><span class="annot"><a href="Callgraph.html#neighbors"><span class="hs-identifier hs-type">neighbors</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set.Set</span></span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-51"></span><span id="neighbors"><span class="annot"><span class="annottext">neighbors :: Graph -&gt; Vertex -&gt; Maybe (Set Vertex)
-</span><a href="Callgraph.html#neighbors"><span class="hs-identifier hs-var hs-var">neighbors</span></a></span></span><span> </span><span id="local-6989586621679457835"><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457835"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span id="local-6989586621679457836"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457836"><span class="hs-identifier hs-var">source</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Graph -&gt; Maybe (Set Vertex)
+</span><a href="Callgraph.html#neighbors"><span class="hs-identifier hs-var hs-var">neighbors</span></a></span></span><span> </span><span id="local-6989586621679489651"><span class="annot"><span class="annottext">Graph
+</span><a href="#local-6989586621679489651"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span id="local-6989586621679489652"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489652"><span class="hs-identifier hs-var">source</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Graph -&gt; Maybe (Set Vertex)
 forall k a. Ord k =&gt; k -&gt; Map k a -&gt; Maybe a
 </span><span class="hs-identifier hs-var">Map.lookup</span></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457836"><span class="hs-identifier hs-var">source</span></a></span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457835"><span class="hs-identifier hs-var">graph'</span></a></span><span>
+</span><a href="#local-6989586621679489652"><span class="hs-identifier hs-var">source</span></a></span><span> </span><span class="annot"><span class="annottext">Graph
+</span><a href="#local-6989586621679489651"><span class="hs-identifier hs-var">graph'</span></a></span><span>
 </span><span id="line-52"></span><span>
 </span><span id="line-53"></span><span class="annot"><span class="hs-comment">-- | Filter all children that satisfy the predicate</span></span><span>
 </span><span id="line-54"></span><span class="annot"><a href="Callgraph.html#filter"><span class="hs-identifier hs-type">filter</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set.Set</span></span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span>
@@ -129,41 +129,41 @@ forall k a. (k -&gt; a -&gt; Bool) -&gt; Map k a -&gt; Map k a
 </span><span id="line-61"></span><span class="annot"><span class="hs-comment">-- | List of recursive vertex</span></span><span>
 </span><span id="line-62"></span><span class="annot"><a href="Callgraph.html#recursive"><span class="hs-identifier hs-type">recursive</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-63"></span><span id="recursive"><span class="annot"><span class="annottext">recursive :: Graph -&gt; [Vertex]
-</span><a href="Callgraph.html#recursive"><span class="hs-identifier hs-var hs-var">recursive</span></a></span></span><span> </span><span id="local-6989586621679457840"><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457840"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="Callgraph.html#recursive"><span class="hs-identifier hs-var hs-var">recursive</span></a></span></span><span> </span><span id="local-6989586621679489656"><span class="annot"><span class="annottext">Graph
+</span><a href="#local-6989586621679489656"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-64"></span><span>  </span><span class="annot"><span class="annottext">Graph -&gt; [Vertex]
 </span><a href="Callgraph.html#vertices"><span class="hs-identifier hs-var">Callgraph.vertices</span></a></span><span> </span><span class="annot"><span class="annottext">(Graph -&gt; [Vertex]) -&gt; Graph -&gt; [Vertex]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-65"></span><span>    </span><span class="annot"><span class="annottext">(Vertex -&gt; Set Vertex -&gt; Bool) -&gt; Graph -&gt; Graph
-</span><a href="Callgraph.html#filterWithKey"><span class="hs-identifier hs-var">Callgraph.filterWithKey</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679457841"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457841"><span class="hs-identifier hs-var">parent</span></a></span></span><span> </span><span id="local-6989586621679457842"><span class="annot"><span class="annottext">Set Vertex
-</span><a href="#local-6989586621679457842"><span class="hs-identifier hs-var">child</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Set Vertex -&gt; Bool
+</span><a href="Callgraph.html#filterWithKey"><span class="hs-identifier hs-var">Callgraph.filterWithKey</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679489657"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489657"><span class="hs-identifier hs-var">parent</span></a></span></span><span> </span><span id="local-6989586621679489658"><span class="annot"><span class="annottext">Set Vertex
+</span><a href="#local-6989586621679489658"><span class="hs-identifier hs-var">child</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Set Vertex -&gt; Bool
 forall a. Ord a =&gt; a -&gt; Set a -&gt; Bool
 </span><span class="hs-identifier hs-var">Set.member</span></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457841"><span class="hs-identifier hs-var">parent</span></a></span><span> </span><span class="annot"><span class="annottext">Set Vertex
-</span><a href="#local-6989586621679457842"><span class="hs-identifier hs-var">child</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457840"><span class="hs-identifier hs-var">graph'</span></a></span><span>
+</span><a href="#local-6989586621679489657"><span class="hs-identifier hs-var">parent</span></a></span><span> </span><span class="annot"><span class="annottext">Set Vertex
+</span><a href="#local-6989586621679489658"><span class="hs-identifier hs-var">child</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Graph
+</span><a href="#local-6989586621679489656"><span class="hs-identifier hs-var">graph'</span></a></span><span>
 </span><span id="line-66"></span><span>
 </span><span id="line-67"></span><span class="annot"><span class="hs-comment">-- | List of vertex with no children</span></span><span>
 </span><span id="line-68"></span><span class="annot"><a href="Callgraph.html#leaf"><span class="hs-identifier hs-type">leaf</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-69"></span><span id="leaf"><span class="annot"><span class="annottext">leaf :: Graph -&gt; [Vertex]
-</span><a href="Callgraph.html#leaf"><span class="hs-identifier hs-var hs-var">leaf</span></a></span></span><span> </span><span id="local-6989586621679457844"><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457844"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Graph -&gt; [Vertex]
+</span><a href="Callgraph.html#leaf"><span class="hs-identifier hs-var hs-var">leaf</span></a></span></span><span> </span><span id="local-6989586621679489660"><span class="annot"><span class="annottext">Graph
+</span><a href="#local-6989586621679489660"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Graph -&gt; [Vertex]
 </span><a href="Callgraph.html#vertices"><span class="hs-identifier hs-var">Callgraph.vertices</span></a></span><span> </span><span class="annot"><span class="annottext">(Graph -&gt; [Vertex]) -&gt; Graph -&gt; [Vertex]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(Set Vertex -&gt; Bool) -&gt; Graph -&gt; Graph
 </span><a href="Callgraph.html#filter"><span class="hs-identifier hs-var">Callgraph.filter</span></a></span><span> </span><span class="annot"><span class="annottext">Set Vertex -&gt; Bool
 forall a. Set a -&gt; Bool
 </span><span class="hs-identifier hs-var">Set.null</span></span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457844"><span class="hs-identifier hs-var">graph'</span></a></span><span>
+</span><a href="#local-6989586621679489660"><span class="hs-identifier hs-var">graph'</span></a></span><span>
 </span><span id="line-70"></span><span>
 </span><span id="line-71"></span><span class="annot"><span class="hs-comment">-- | List of symbols which call source vertex</span></span><span>
 </span><span id="line-72"></span><span class="annot"><a href="Callgraph.html#callers"><span class="hs-identifier hs-type">callers</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-73"></span><span id="callers"><span class="annot"><span class="annottext">callers :: Graph -&gt; Vertex -&gt; [Vertex]
-</span><a href="Callgraph.html#callers"><span class="hs-identifier hs-var hs-var">callers</span></a></span></span><span> </span><span id="local-6989586621679457846"><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457846"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span id="local-6989586621679457847"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457847"><span class="hs-identifier hs-var">source</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="Callgraph.html#callers"><span class="hs-identifier hs-var hs-var">callers</span></a></span></span><span> </span><span id="local-6989586621679489662"><span class="annot"><span class="annottext">Graph
+</span><a href="#local-6989586621679489662"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span id="local-6989586621679489663"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489663"><span class="hs-identifier hs-var">source</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-74"></span><span>  </span><span class="annot"><span class="annottext">Graph -&gt; [Vertex]
 </span><a href="Callgraph.html#vertices"><span class="hs-identifier hs-var">Callgraph.vertices</span></a></span><span> </span><span class="annot"><span class="annottext">(Graph -&gt; [Vertex]) -&gt; Graph -&gt; [Vertex]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
@@ -172,15 +172,15 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><a href="Callgraph.html#filter"><span class="hs-identifier hs-var">Callgraph.filter</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Vertex -&gt; Set Vertex -&gt; Bool
 forall a. Ord a =&gt; a -&gt; Set a -&gt; Bool
 </span><span class="hs-identifier hs-var">Set.member</span></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457847"><span class="hs-identifier hs-var">source</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457846"><span class="hs-identifier hs-var">graph'</span></a></span><span>
+</span><a href="#local-6989586621679489663"><span class="hs-identifier hs-var">source</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Graph
+</span><a href="#local-6989586621679489662"><span class="hs-identifier hs-var">graph'</span></a></span><span>
 </span><span id="line-76"></span><span>
 </span><span id="line-77"></span><span class="annot"><span class="hs-comment">-- | List of symbols which source vertex calls</span></span><span>
 </span><span id="line-78"></span><span class="annot"><a href="Callgraph.html#callees"><span class="hs-identifier hs-type">callees</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">]</span><span>
 </span><span id="line-79"></span><span id="callees"><span class="annot"><span class="annottext">callees :: Graph -&gt; Vertex -&gt; [Vertex]
-</span><a href="Callgraph.html#callees"><span class="hs-identifier hs-var hs-var">callees</span></a></span></span><span> </span><span id="local-6989586621679457848"><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457848"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span id="local-6989586621679457849"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457849"><span class="hs-identifier hs-var">source</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="Callgraph.html#callees"><span class="hs-identifier hs-var hs-var">callees</span></a></span></span><span> </span><span id="local-6989586621679489664"><span class="annot"><span class="annottext">Graph
+</span><a href="#local-6989586621679489664"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span id="local-6989586621679489665"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489665"><span class="hs-identifier hs-var">source</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-80"></span><span>  </span><span class="annot"><span class="annottext">[Vertex]
 -&gt; (Set Vertex -&gt; [Vertex]) -&gt; Maybe (Set Vertex) -&gt; [Vertex]
 forall b a. b -&gt; (a -&gt; b) -&gt; Maybe a -&gt; b
@@ -190,25 +190,25 @@ forall a. Set a -&gt; [a]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Graph -&gt; Vertex -&gt; Maybe (Set Vertex)
 </span><a href="Callgraph.html#neighbors"><span class="hs-identifier hs-var">Callgraph.neighbors</span></a></span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457848"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457849"><span class="hs-identifier hs-var">source</span></a></span><span>
+</span><a href="#local-6989586621679489664"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489665"><span class="hs-identifier hs-var">source</span></a></span><span>
 </span><span id="line-81"></span><span>
 </span><span id="line-82"></span><span class="hs-comment">-- | Find the vertex with the maximum sum of callers.</span><span>
 </span><span id="line-83"></span><span class="hs-comment">--   If multiple vertex share the same maximum caller sum</span><span>
 </span><span id="line-84"></span><span class="hs-comment">--   return the first vertex found of maximum sum.</span><span>
 </span><span id="line-85"></span><span class="annot"><a href="Callgraph.html#mostCalled"><span class="hs-identifier hs-type">mostCalled</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span>
 </span><span id="line-86"></span><span id="mostCalled"><span class="annot"><span class="annottext">mostCalled :: Graph -&gt; Maybe Vertex
-</span><a href="Callgraph.html#mostCalled"><span class="hs-identifier hs-var hs-var">mostCalled</span></a></span></span><span> </span><span id="local-6989586621679457851"><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457851"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="Callgraph.html#mostCalled"><span class="hs-identifier hs-var hs-var">mostCalled</span></a></span></span><span> </span><span id="local-6989586621679489667"><span class="annot"><span class="annottext">Graph
+</span><a href="#local-6989586621679489667"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-87"></span><span>  </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Graph -&gt; [Vertex]
 </span><a href="Callgraph.html#vertices"><span class="hs-identifier hs-var">Callgraph.vertices</span></a></span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457851"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><a href="#local-6989586621679489667"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="hs-keyword">of</span><span>
 </span><span id="line-88"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Maybe Vertex
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-89"></span><span>    </span><span id="local-6989586621679457852"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457852"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679457853"><span class="annot"><span class="annottext">[Vertex]
-</span><a href="#local-6989586621679457853"><span class="hs-identifier hs-var">vs</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Maybe Vertex
+</span><span id="line-89"></span><span>    </span><span id="local-6989586621679489668"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489668"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679489669"><span class="annot"><span class="annottext">[Vertex]
+</span><a href="#local-6989586621679489669"><span class="hs-identifier hs-var">vs</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Maybe Vertex
 forall a. a -&gt; Maybe a
 </span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(Vertex -&gt; Maybe Vertex) -&gt; Vertex -&gt; Maybe Vertex
 forall a b. (a -&gt; b) -&gt; a -&gt; b
@@ -223,59 +223,59 @@ forall (t :: * -&gt; *) a b.
 Foldable t =&gt;
 (a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b
 </span><span class="hs-identifier hs-var">foldr</span></span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; (Vertex, Int) -&gt; (Vertex, Int)
-</span><a href="#local-6989586621679457856"><span class="hs-identifier hs-var">step</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457852"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Int
-</span><a href="#local-6989586621679457857"><span class="hs-identifier hs-var">value</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457852"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Vertex]
-</span><a href="#local-6989586621679457853"><span class="hs-identifier hs-var">vs</span></a></span><span>
+</span><a href="#local-6989586621679489672"><span class="hs-identifier hs-var">step</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489668"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Int
+</span><a href="#local-6989586621679489673"><span class="hs-identifier hs-var">value'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489668"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Vertex]
+</span><a href="#local-6989586621679489669"><span class="hs-identifier hs-var">vs</span></a></span><span>
 </span><span id="line-90"></span><span>  </span><span class="hs-keyword">where</span><span>
-</span><span id="line-91"></span><span>    </span><span class="annot"><a href="#local-6989586621679457857"><span class="hs-identifier hs-type">value</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
-</span><span id="line-92"></span><span>    </span><span id="local-6989586621679457857"><span class="annot"><span class="annottext">value :: Vertex -&gt; Int
-</span><a href="#local-6989586621679457857"><span class="hs-identifier hs-var hs-var">value</span></a></span></span><span> </span><span id="local-6989586621679457858"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457858"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Vertex] -&gt; Int
+</span><span id="line-91"></span><span>    </span><span class="annot"><a href="#local-6989586621679489673"><span class="hs-identifier hs-type">value'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-92"></span><span>    </span><span id="local-6989586621679489673"><span class="annot"><span class="annottext">value' :: Vertex -&gt; Int
+</span><a href="#local-6989586621679489673"><span class="hs-identifier hs-var hs-var">value'</span></a></span></span><span> </span><span id="local-6989586621679489674"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489674"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Vertex] -&gt; Int
 forall a. [a] -&gt; Int
 forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
 </span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Graph -&gt; Vertex -&gt; [Vertex]
 </span><a href="Callgraph.html#callers"><span class="hs-identifier hs-var">Callgraph.callers</span></a></span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457851"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457858"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679489667"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489674"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-93"></span><span>
-</span><span id="line-94"></span><span>    </span><span class="annot"><a href="#local-6989586621679457856"><span class="hs-identifier hs-type">step</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
-</span><span id="line-95"></span><span>    </span><span id="local-6989586621679457856"><span class="annot"><span class="annottext">step :: Vertex -&gt; (Vertex, Int) -&gt; (Vertex, Int)
-</span><a href="#local-6989586621679457856"><span class="hs-identifier hs-var hs-var">step</span></a></span></span><span> </span><span id="local-6989586621679457860"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457860"><span class="hs-identifier hs-var">candidate</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679457861"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457861"><span class="hs-identifier hs-var">curVertex</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679457862"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679457862"><span class="hs-identifier hs-var">curVal</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-94"></span><span>    </span><span class="annot"><a href="#local-6989586621679489672"><span class="hs-identifier hs-type">step</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
+</span><span id="line-95"></span><span>    </span><span id="local-6989586621679489672"><span class="annot"><span class="annottext">step :: Vertex -&gt; (Vertex, Int) -&gt; (Vertex, Int)
+</span><a href="#local-6989586621679489672"><span class="hs-identifier hs-var hs-var">step</span></a></span></span><span> </span><span id="local-6989586621679489676"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489676"><span class="hs-identifier hs-var">candidate</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679489677"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489677"><span class="hs-identifier hs-var">curVertex</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679489678"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679489678"><span class="hs-identifier hs-var">curVal</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-96"></span><span>      </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679457862"><span class="hs-identifier hs-var">curVal</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+</span><a href="#local-6989586621679489678"><span class="hs-identifier hs-var">curVal</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
 forall a. Ord a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">&lt;</span></span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Int
-</span><a href="#local-6989586621679457857"><span class="hs-identifier hs-var">value</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457860"><span class="hs-identifier hs-var">candidate</span></a></span><span>
+</span><a href="#local-6989586621679489673"><span class="hs-identifier hs-var">value'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489676"><span class="hs-identifier hs-var">candidate</span></a></span><span>
 </span><span id="line-97"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457860"><span class="hs-identifier hs-var">candidate</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Int
-</span><a href="#local-6989586621679457857"><span class="hs-identifier hs-var">value</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457860"><span class="hs-identifier hs-var">candidate</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679489676"><span class="hs-identifier hs-var">candidate</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Int
+</span><a href="#local-6989586621679489673"><span class="hs-identifier hs-var">value'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489676"><span class="hs-identifier hs-var">candidate</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-98"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457861"><span class="hs-identifier hs-var">curVertex</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679457862"><span class="hs-identifier hs-var">curVal</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679489677"><span class="hs-identifier hs-var">curVertex</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679489678"><span class="hs-identifier hs-var">curVal</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-99"></span><span>
 </span><span id="line-100"></span><span class="hs-comment">-- | Find the vertex with the maximum sum of callers and callees.</span><span>
 </span><span id="line-101"></span><span class="hs-comment">--   If multiple vertex share the same maximum sum return the</span><span>
 </span><span id="line-102"></span><span class="hs-comment">--   first vertex found of maximum sum.</span><span>
 </span><span id="line-103"></span><span class="annot"><a href="Callgraph.html#mostConnected"><span class="hs-identifier hs-type">mostConnected</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span>
 </span><span id="line-104"></span><span id="mostConnected"><span class="annot"><span class="annottext">mostConnected :: Graph -&gt; Maybe Vertex
-</span><a href="Callgraph.html#mostConnected"><span class="hs-identifier hs-var hs-var">mostConnected</span></a></span></span><span> </span><span id="local-6989586621679457864"><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457864"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="Callgraph.html#mostConnected"><span class="hs-identifier hs-var hs-var">mostConnected</span></a></span></span><span> </span><span id="local-6989586621679489680"><span class="annot"><span class="annottext">Graph
+</span><a href="#local-6989586621679489680"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-105"></span><span>  </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Graph -&gt; [Vertex]
 </span><a href="Callgraph.html#vertices"><span class="hs-identifier hs-var">Callgraph.vertices</span></a></span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457864"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><a href="#local-6989586621679489680"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="hs-keyword">of</span><span>
 </span><span id="line-106"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Maybe Vertex
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-107"></span><span>    </span><span id="local-6989586621679457865"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457865"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679457866"><span class="annot"><span class="annottext">[Vertex]
-</span><a href="#local-6989586621679457866"><span class="hs-identifier hs-var">vs</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Maybe Vertex
+</span><span id="line-107"></span><span>    </span><span id="local-6989586621679489681"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489681"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679489682"><span class="annot"><span class="annottext">[Vertex]
+</span><a href="#local-6989586621679489682"><span class="hs-identifier hs-var">vs</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Maybe Vertex
 forall a. a -&gt; Maybe a
 </span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(Vertex -&gt; Maybe Vertex) -&gt; Vertex -&gt; Maybe Vertex
 forall a b. (a -&gt; b) -&gt; a -&gt; b
@@ -290,23 +290,23 @@ forall (t :: * -&gt; *) a b.
 Foldable t =&gt;
 (a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b
 </span><span class="hs-identifier hs-var">foldr</span></span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; (Vertex, Int) -&gt; (Vertex, Int)
-</span><a href="#local-6989586621679457867"><span class="hs-identifier hs-var">step</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457865"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Int
-</span><a href="#local-6989586621679457868"><span class="hs-identifier hs-var">value</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457865"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Vertex]
-</span><a href="#local-6989586621679457866"><span class="hs-identifier hs-var">vs</span></a></span><span>
+</span><a href="#local-6989586621679489683"><span class="hs-identifier hs-var">step</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489681"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Int
+</span><a href="#local-6989586621679489684"><span class="hs-identifier hs-var">value'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489681"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Vertex]
+</span><a href="#local-6989586621679489682"><span class="hs-identifier hs-var">vs</span></a></span><span>
 </span><span id="line-108"></span><span>  </span><span class="hs-keyword">where</span><span>
-</span><span id="line-109"></span><span>    </span><span class="annot"><a href="#local-6989586621679457868"><span class="hs-identifier hs-type">value</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
-</span><span id="line-110"></span><span>    </span><span id="local-6989586621679457868"><span class="annot"><span class="annottext">value :: Vertex -&gt; Int
-</span><a href="#local-6989586621679457868"><span class="hs-identifier hs-var hs-var">value</span></a></span></span><span> </span><span id="local-6989586621679457869"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457869"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-109"></span><span>    </span><span class="annot"><a href="#local-6989586621679489684"><span class="hs-identifier hs-type">value'</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-110"></span><span>    </span><span id="local-6989586621679489684"><span class="annot"><span class="annottext">value' :: Vertex -&gt; Int
+</span><a href="#local-6989586621679489684"><span class="hs-identifier hs-var hs-var">value'</span></a></span></span><span> </span><span id="local-6989586621679489685"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489685"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-111"></span><span>      </span><span class="annot"><span class="annottext">[Vertex] -&gt; Int
 forall a. [a] -&gt; Int
 forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
 </span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Graph -&gt; Vertex -&gt; [Vertex]
 </span><a href="Callgraph.html#callers"><span class="hs-identifier hs-var">Callgraph.callers</span></a></span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457864"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457869"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679489680"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489685"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-112"></span><span>        </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
 forall a. Num a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">[Vertex] -&gt; Int
@@ -314,83 +314,83 @@ forall a. [a] -&gt; Int
 forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
 </span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Graph -&gt; Vertex -&gt; [Vertex]
 </span><a href="Callgraph.html#callees"><span class="hs-identifier hs-var">callees</span></a></span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457864"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457869"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679489680"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489685"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-113"></span><span>
-</span><span id="line-114"></span><span>    </span><span class="annot"><a href="#local-6989586621679457867"><span class="hs-identifier hs-type">step</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
-</span><span id="line-115"></span><span>    </span><span id="local-6989586621679457867"><span class="annot"><span class="annottext">step :: Vertex -&gt; (Vertex, Int) -&gt; (Vertex, Int)
-</span><a href="#local-6989586621679457867"><span class="hs-identifier hs-var hs-var">step</span></a></span></span><span> </span><span id="local-6989586621679457871"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457871"><span class="hs-identifier hs-var">candidate</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679457872"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457872"><span class="hs-identifier hs-var">curVertex</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679457873"><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679457873"><span class="hs-identifier hs-var">curVal</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-114"></span><span>    </span><span class="annot"><a href="#local-6989586621679489683"><span class="hs-identifier hs-type">step</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
+</span><span id="line-115"></span><span>    </span><span id="local-6989586621679489683"><span class="annot"><span class="annottext">step :: Vertex -&gt; (Vertex, Int) -&gt; (Vertex, Int)
+</span><a href="#local-6989586621679489683"><span class="hs-identifier hs-var hs-var">step</span></a></span></span><span> </span><span id="local-6989586621679489687"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489687"><span class="hs-identifier hs-var">candidate</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679489688"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489688"><span class="hs-identifier hs-var">curVertex</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679489689"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679489689"><span class="hs-identifier hs-var">curVal</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-116"></span><span>      </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679457873"><span class="hs-identifier hs-var">curVal</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+</span><a href="#local-6989586621679489689"><span class="hs-identifier hs-var">curVal</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
 forall a. Ord a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">&lt;</span></span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Int
-</span><a href="#local-6989586621679457868"><span class="hs-identifier hs-var">value</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457871"><span class="hs-identifier hs-var">candidate</span></a></span><span>
+</span><a href="#local-6989586621679489684"><span class="hs-identifier hs-var">value'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489687"><span class="hs-identifier hs-var">candidate</span></a></span><span>
 </span><span id="line-117"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457871"><span class="hs-identifier hs-var">candidate</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Int
-</span><a href="#local-6989586621679457868"><span class="hs-identifier hs-var">value</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457871"><span class="hs-identifier hs-var">candidate</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679489687"><span class="hs-identifier hs-var">candidate</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Int
+</span><a href="#local-6989586621679489684"><span class="hs-identifier hs-var">value'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489687"><span class="hs-identifier hs-var">candidate</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-118"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457872"><span class="hs-identifier hs-var">curVertex</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679457873"><span class="hs-identifier hs-var">curVal</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679489688"><span class="hs-identifier hs-var">curVertex</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679489689"><span class="hs-identifier hs-var">curVal</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-119"></span><span>
 </span><span id="line-120"></span><span class="annot"><span class="hs-comment">-- | Is destination vertex reachable from source vertex</span></span><span>
 </span><span id="line-121"></span><span class="annot"><a href="Callgraph.html#reachable"><span class="hs-identifier hs-type">reachable</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
 </span><span id="line-122"></span><span id="reachable"><span class="annot"><span class="annottext">reachable :: Graph -&gt; Vertex -&gt; Vertex -&gt; Bool
-</span><a href="Callgraph.html#reachable"><span class="hs-identifier hs-var hs-var">reachable</span></a></span></span><span> </span><span id="local-6989586621679457874"><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457874"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span id="local-6989586621679457875"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457875"><span class="hs-identifier hs-var">source</span></a></span></span><span> </span><span id="local-6989586621679457876"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457876"><span class="hs-identifier hs-var">destination</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set Vertex -&gt; Vertex -&gt; Bool
-</span><a href="#local-6989586621679457877"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Set Vertex
+</span><a href="Callgraph.html#reachable"><span class="hs-identifier hs-var hs-var">reachable</span></a></span></span><span> </span><span id="local-6989586621679489690"><span class="annot"><span class="annottext">Graph
+</span><a href="#local-6989586621679489690"><span class="hs-identifier hs-var">graph'</span></a></span></span><span> </span><span id="local-6989586621679489691"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489691"><span class="hs-identifier hs-var">source</span></a></span></span><span> </span><span id="local-6989586621679489692"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489692"><span class="hs-identifier hs-var">destination</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set Vertex -&gt; Vertex -&gt; Bool
+</span><a href="#local-6989586621679489693"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Set Vertex
 forall a. Set a
 </span><span class="hs-identifier hs-var">Set.empty</span></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457875"><span class="hs-identifier hs-var">source</span></a></span><span>
+</span><a href="#local-6989586621679489691"><span class="hs-identifier hs-var">source</span></a></span><span>
 </span><span id="line-123"></span><span>  </span><span class="hs-keyword">where</span><span>
-</span><span id="line-124"></span><span>    </span><span class="annot"><a href="#local-6989586621679457877"><span class="hs-identifier hs-type">go</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set.Set</span></span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
-</span><span id="line-125"></span><span>    </span><span id="local-6989586621679457877"><span class="annot"><span class="annottext">go :: Set Vertex -&gt; Vertex -&gt; Bool
-</span><a href="#local-6989586621679457877"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span> </span><span id="local-6989586621679457878"><span class="annot"><span class="annottext">Set Vertex
-</span><a href="#local-6989586621679457878"><span class="hs-identifier hs-var">visited</span></a></span></span><span> </span><span id="local-6989586621679457879"><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457879"><span class="hs-identifier hs-var">v</span></a></span></span><span>
+</span><span id="line-124"></span><span>    </span><span class="annot"><a href="#local-6989586621679489693"><span class="hs-identifier hs-type">go</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set.Set</span></span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Callgraph.html#Vertex"><span class="hs-identifier hs-type">Vertex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-125"></span><span>    </span><span id="local-6989586621679489693"><span class="annot"><span class="annottext">go :: Set Vertex -&gt; Vertex -&gt; Bool
+</span><a href="#local-6989586621679489693"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span> </span><span id="local-6989586621679489694"><span class="annot"><span class="annottext">Set Vertex
+</span><a href="#local-6989586621679489694"><span class="hs-identifier hs-var">visited</span></a></span></span><span> </span><span id="local-6989586621679489695"><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489695"><span class="hs-identifier hs-var">v</span></a></span></span><span>
 </span><span id="line-126"></span><span>      </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457879"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Vertex -&gt; Bool
+</span><a href="#local-6989586621679489695"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Vertex -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457876"><span class="hs-identifier hs-var">destination</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679489692"><span class="hs-identifier hs-var">destination</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">True</span></span><span>
 </span><span id="line-127"></span><span>      </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Set Vertex -&gt; Bool
 forall a. Ord a =&gt; a -&gt; Set a -&gt; Bool
 </span><span class="hs-identifier hs-var">Set.member</span></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457879"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="annot"><span class="annottext">Set Vertex
-</span><a href="#local-6989586621679457878"><span class="hs-identifier hs-var">visited</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679489695"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="annot"><span class="annottext">Set Vertex
+</span><a href="#local-6989586621679489694"><span class="hs-identifier hs-var">visited</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">False</span></span><span>
 </span><span id="line-128"></span><span>      </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-129"></span><span>          </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Graph -&gt; Vertex -&gt; Maybe (Set Vertex)
 </span><a href="Callgraph.html#neighbors"><span class="hs-identifier hs-var">Callgraph.neighbors</span></a></span><span> </span><span class="annot"><span class="annottext">Graph
-</span><a href="#local-6989586621679457874"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457879"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><a href="#local-6989586621679489690"><span class="hs-identifier hs-var">graph'</span></a></span><span> </span><span class="annot"><span class="annottext">Vertex
+</span><a href="#local-6989586621679489695"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="hs-keyword">of</span><span>
 </span><span id="line-130"></span><span>            </span><span class="annot"><span class="annottext">Maybe (Set Vertex)
 </span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">False</span></span><span>
-</span><span id="line-131"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679457880"><span class="annot"><span class="annottext">Set Vertex
-</span><a href="#local-6989586621679457880"><span class="hs-identifier hs-var">ns</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><span id="line-132"></span><span>              </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679457882"><span class="annot"><span class="annottext">visited' :: Set Vertex
-</span><a href="#local-6989586621679457882"><span class="hs-identifier hs-var hs-var">visited'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Set Vertex -&gt; Set Vertex
+</span><span id="line-131"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679489696"><span class="annot"><span class="annottext">Set Vertex
+</span><a href="#local-6989586621679489696"><span class="hs-identifier hs-var">ns</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-132"></span><span>              </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679489698"><span class="annot"><span class="annottext">visited' :: Set Vertex
+</span><a href="#local-6989586621679489698"><span class="hs-identifier hs-var hs-var">visited'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Vertex -&gt; Set Vertex -&gt; Set Vertex
 forall a. Ord a =&gt; a -&gt; Set a -&gt; Set a
 </span><span class="hs-identifier hs-var">Set.insert</span></span><span> </span><span class="annot"><span class="annottext">Vertex
-</span><a href="#local-6989586621679457879"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="annot"><span class="annottext">Set Vertex
-</span><a href="#local-6989586621679457878"><span class="hs-identifier hs-var">visited</span></a></span><span>
+</span><a href="#local-6989586621679489695"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="annot"><span class="annottext">Set Vertex
+</span><a href="#local-6989586621679489694"><span class="hs-identifier hs-var">visited</span></a></span><span>
 </span><span id="line-133"></span><span>               </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">(Vertex -&gt; Bool) -&gt; [Vertex] -&gt; Bool
 forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Bool
 </span><span class="hs-identifier hs-var">any</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set Vertex -&gt; Vertex -&gt; Bool
-</span><a href="#local-6989586621679457877"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Set Vertex
-</span><a href="#local-6989586621679457882"><span class="hs-identifier hs-var">visited'</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set Vertex -&gt; [Vertex]
+</span><a href="#local-6989586621679489693"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Set Vertex
+</span><a href="#local-6989586621679489698"><span class="hs-identifier hs-var">visited'</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set Vertex -&gt; [Vertex]
 forall a. Set a -&gt; [a]
 </span><span class="hs-identifier hs-var">Set.toList</span></span><span> </span><span class="annot"><span class="annottext">Set Vertex
-</span><a href="#local-6989586621679457880"><span class="hs-identifier hs-var">ns</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679489696"><span class="hs-identifier hs-var">ns</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-134"></span><span>
 </span><span id="line-135"></span><span class="annot"><span class="hs-comment">-- | Number of nodes</span></span><span>
 </span><span id="line-136"></span><span class="annot"><a href="Callgraph.html#order"><span class="hs-identifier hs-type">order</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Callgraph.html#Graph"><span class="hs-identifier hs-type">Graph</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
