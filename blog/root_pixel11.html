@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BloomBit – Root Pixel 11 (cub)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../styles.css"/>
+
+  <style>
+    .ffi-transform {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0.5rem;
+      align-items: start;
+      margin-top: 0.8rem;
+    }
+
+    @media (max-width: 900px) {
+      .ffi-transform {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .ffi-transform-col {
+      border: 1px solid var(--border-soft);
+      background: var(--panel-alt);
+      border-radius: var(--radius-md);
+      padding: 0.15rem 0.25rem 0.25rem;
+    }
+
+    .ffi-transform-heading {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--ink-muted);
+      margin: 0 0 0.55rem;
+    }
+
+    .ffi-transform-col pre {
+      margin: 0;
+      background: #f7f4eb;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div class="brand-text-main">BloomBit</div>
+          <div class="brand-text-sub">program analysis &amp; reverse engineering</div>
+        </div>
+      </div>
+      <nav>
+        <a href="https://www.bloombit.dev">home</a>
+        <a href="https://github.com/bloombit-dev">github</a>
+      </nav>
+    </header>
+
+    <main>
+
+      <article class="post-content">
+          <h1 class="blog-section">Rooting Pixel 11
+             <img src="../assets/root_pixel11/phone.png" alt="image of a pink pixel 11" class="transparent-img"
+              width="63.75" height="70.65"
+              style="opacity: 0.95;"
+             >
+          </h1>
+        <div class="post-meta">Phone · Pixel · Magisk — September 10, 2026</div>
+
+        <p>This post details rooting a pixel 11 with Magisk. The following was done on a phone ordered through
+           Google Fi shop. It is unknown to me if other sources of the phone allow bootloader unlocking.
+        </p>
+
+        <p style="color: #FF0000;">Suggestion: Don't unlock the bootloader and root your personal device.</p>
+
+        <h2 class="blog-subsection">Prepare Phone</h2>
+          <h3>Update</h3>
+          Update to firmware of interest. Note the bootloader has an anti-roll back version
+          that could prevent downgrading firmware.
+          <h3>Enable Developer Mode</h3>
+          <ul>
+            <li>Navigate: Settings --> About phone</li>
+            <li>Click: "Build number" until prompt to enter pin</li>
+            <li>Enter pin</li>
+            <li>Toast message: "You are now a developer!"</li>
+          </ul>
+
+          <img src="../assets/root_pixel11/you_are_a_developer.png"
+               alt="screenshot showing toast message of developer mode"
+               width="200" height="400"
+               style="opacity: 0.95;"
+          >
+
+          <h3>Enable OEM Unlocking</h3>
+          <ul>
+            <li>Navigate: Settings --> Developer options</li>
+            <li>Click: OEM unlocking</li>
+            <li>Enter pin</li>
+            <li>Read warning then click "Enable"</li>
+          </ul>
+
+          <img src="../assets/root_pixel11/oem_unlock_warning.png"
+               alt="screenshot showing OEM unlock warning"
+               width="200" height="400"
+               style="opacity: 0.95;"
+          >
+
+          <img src="../assets/root_pixel11/enable_oem_pixel11.png"
+               alt="screenshot showing OEM unlocked"
+               width="200" height="400"
+               style="opacity: 0.95;"
+          >
+
+        <h3>Unlock Bootloader</h3>
+          <p style="color: #FF0000;">WARNING: Data will be erased.</p>
+          <ul> 
+          <li>Install on host: <a href="https://developer.android.com/tools/releases/platform-tools#downloads">Platform-Tools</a></li>
+          <li>Restart device, holding volume button down during restart</li>
+          <li>Fastboot menu should be visible</li>
+          <li>On host: fastboot devices</li>
+          <li>Confirm serial number matches</li>
+          <li>On host: fastboot flashing unlock</li>
+          <li>On phone: Use volume buttons to change: "Do not unlock the bootloader" to "Unlock the bootloader"</li>
+          <li>On phone: Press power button to trigger a reboot</li>
+          <li>Debug menu should show: Device state: unlocked</li>
+          <li>On phone: Press power button with option: Start</li>
+          </ul>
+
+          <p>Each restart will display a warning regarding the bootloader being unlocked. Fastboot can be used to lock the bootloader.</p>
+
+        <h2 class="blog-subsection">Patch Firmware Image</h2>
+
+        <h3>Install Magisk</h3>
+          Install <a href="https://github.com/topjohnwu/Magisk/releases/download/v31.0/Magisk-v31.0.apk">Magisk-v31.0.apk</a>
+          <br>
+           <img src="../assets/root_pixel11/magisk_logo.png"
+            alt="logo of magisk"
+            width="300" height="120"
+           >
+
+          <ul>
+            <li>Navigate: Settings --> Developer options</li>
+            <li>Click: Enable USB debugging</li>
+            <li>On host: adb install Magisk-v31.0.apk</li>
+          </ul>
+
+          <h3>Record build number</h3>
+          <ul>
+            <li>Navigate: Settings --> About phone</li>
+            <li>Long press "Build number" to copy</li>
+            <li>Example: CD1A.260905.001.B1</li>
+          </ul>
+
+          <h3>Obtain link to firmware image</h3>
+          <ul>
+            <li>Navigate: <a href="https://developers.google.com/android/images">Factory Images for Nexus and Pixel Devices</a>
+            <li>Locate codename for device<li>
+              <ul>
+                <li>Pixel 11: cubs</li>
+                <li>Pixel 11 Pro: grizzly</li>
+                <li>Pixel 11 Pro XL: kodiak</li>
+                <li>Pixel 11 Pro Fold: yogi</li>
+              </ul>
+            <li>Locate desired build for associated device then copy link on phone</li>
+          </ul>
+
+          <h3>Create patched magisk image</h3>
+          <ul>
+            <li>Open Magisk app</li>
+            <li>Click: Install</li>
+            <li>Click: Download and patch a file</li>
+            <li>Paste: Link to firmware image</li>
+          </ul>
+
+          <img src="../assets/root_pixel11/magisk_output.png"
+               alt="screenshot showing magisk patching output"
+               width="400" height="400"
+          >
+
+        <h3>Download patched firmware image</h3>
+        <ul>
+          <li>adb pull /storage/emulated/0/Download/magisk_patched-31000_3vr4W.img</li>
+        </ul>
+
+        <h2 class="blog-subsection">Flash Patched Firmware Image</h2>
+
+        <ul>
+          <li>Enter fastboot mode: Restart phone and hold volume button down</li>
+          <li>Confirm serial number matches with: fastboot devices</li>
+          <li>Flash: bloombit@Mac Downloads % fastboot flash init_boot magisk_patched-31000_3vr4W.img
+                     Sending 'init_boot_b' (8192 KB)                    OKAY [  0.020s]
+                     Writing 'init_boot_b'                              OKAY [  0.267s]
+                     Finished. Total time: 0.288s</li>
+          <li>fastboot reboot</li>
+          <li>Once phone reboots into new firmware open the magisk app to finish rooting</li>
+          <li>Opening Magisk will download magisk over network</li>
+          <li>Open downloaded Magisk, should prompt you to reboot to finish install</li>
+        </ul>
+          <p style="color: #FF0000;">Pixel is now rooted!</p>
+
+        <h2 class="blog-subsection">Root Shell</h2>
+          <ul>
+            <li>On host: adb shell</li>
+            <li>On host: su</li>
+            <li>On phone: Magisk should prompt you to grant root access to Shell</li>
+          </ul>
+
+          <img src="../assets/root_pixel11/Screenshot_20260910-224919.png"
+               alt="screenshot showing Magisk granting root shell"
+               width="200" height="400"
+               style="opacity: 0.95;"
+          >
+
+
+      </article>
+    </main>
+  </div>
+</body>
+</html>
+
